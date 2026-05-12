@@ -1,54 +1,60 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody))] // Rigidbody yoksa otomatik ekler
 public class UstaHareket : MonoBehaviour
 {
     [Header("Hareket Ayarlarý")]
     public float yürümeHýzý = 5f;
-    public float dönmeHýzý = 10f; // Karakterin saða sola dönerkenki yumuþaklýðý
+    public float dönmeHýzý = 20f;
 
     private Rigidbody rb;
     private Animator anim;
     private Vector3 hareketYonu;
 
-    void Start()
+    void Awake()
     {
-        // Bileþenleri kodun içine alýyoruz
+        // Ana objedeki Rigidbody'yi al
         rb = GetComponent<Rigidbody>();
-        anim = GetComponent<Animator>();
+
+        // Ýçteki modelde (Child) bulunan Animator'ü bul (Parenting hilesi için)
+        anim = GetComponentInChildren<Animator>();
+
+        // FÝZÝK DÜZELTMESÝ: Karakterin devrilmemesi için rotasyonu koddan dondur
+        rb.freezeRotation = true;
     }
 
     void Update()
     {
-        // W, A, S, D tuþlarýndan gelen girdileri al (1 veya -1 olarak)
-        float yatay = Input.GetAxisRaw("Horizontal"); // A ve D
-        float dikey = Input.GetAxisRaw("Vertical");   // W ve S
+        // --- ESKÝ SÝSTEM (OLD INPUT SYSTEM) GÝRDÝLERÝ ---
+        // Baþlarýna eksi (-) iþareti konularak W-S ve A-D yönleri tam tersine çevrildi
+        float yatay = -Input.GetAxisRaw("Horizontal"); // D sola, A saða gider
+        float dikey = -Input.GetAxisRaw("Vertical");   // W geriye, S ileriye gider
 
-        // Vektörü oluþtur ve normalize et (Çapraz giderken hýzlanmasýný engeller)
+        // Yön vektörünü oluþtur ve normalize et (çapraz giderken ekstra hýzlanmayý önler)
         hareketYonu = new Vector3(yatay, 0f, dikey).normalized;
 
-        // Eðer karakter hareket ediyorsa animasyonu baþlat, duruyorsa durdur
-        if (hareketYonu.magnitude >= 0.1f)
+        // Animasyon kontrolü
+        if (anim != null)
         {
-            anim.SetBool("isWalking", true);
-        }
-        else
-        {
-            anim.SetBool("isWalking", false);
+            // Karakter hareket ediyorsa yürüme animasyonunu tetikle
+            anim.SetBool("isWalking", hareketYonu.magnitude >= 0.1f);
         }
     }
 
-    // Fizik iþlemleri her zaman FixedUpdate içinde yapýlýr (Duvarlardan titreyerek geçmemesi için)
     void FixedUpdate()
     {
+        // Eðer usta hareket etmeye çalýþýyorsa
         if (hareketYonu.magnitude >= 0.1f)
         {
-            // 1. Karakterin yüzünü gittiði yöne doðru yumuþakça çevir
-            Quaternion hedefDonus = Quaternion.LookRotation(hareketYonu);
-            rb.rotation = Quaternion.Slerp(rb.rotation, hedefDonus, dönmeHýzý * Time.fixedDeltaTime);
+            // A- DÖNME ÝÞLEMÝ
+            // Gidilen yöne doðru bakýþ açýsýný hesapla
+            Quaternion targetRotation = Quaternion.LookRotation(hareketYonu);
 
-            // 2. Karakteri o yöne doðru ilerlet
+            // Ustayý o yöne doðru fiziken yumuþakça çevir
+            rb.MoveRotation(Quaternion.Slerp(rb.rotation, targetRotation, dönmeHýzý * Time.fixedDeltaTime));
+
+            // B- ÝLERLEME ÝÞLEMÝ
             rb.MovePosition(rb.position + hareketYonu * yürümeHýzý * Time.fixedDeltaTime);
         }
     }
 }
-
