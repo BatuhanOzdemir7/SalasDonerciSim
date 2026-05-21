@@ -10,6 +10,7 @@ public class DonerMakinesi : MonoBehaviour
     [Header("Etkileþim Ayarlarý")]
     public bool oyuncuYakindaMi = false;
     public GameObject eTusuGorseli;
+    private OyuncuEnvanter makineyeYakinOyuncu; // YENÝ: Yakýndaki oyuncunun envanter referansý
 
     [Header("Piþme Ayarlarý")]
     public MeshRenderer donerEtiRenderer;
@@ -26,8 +27,6 @@ public class DonerMakinesi : MonoBehaviour
     public Image yuklemeCubugu;
     public float kesmeHizi = 1f;
     private float kesmeIlerlemesi = 0f;
-
-    // YENÝ: Otomatik kesim durumunu takip eden anahtar
     public bool kesimYapiliyorMu = false;
 
     [Header("Düþen Et Ayarlarý")]
@@ -44,15 +43,19 @@ public class DonerMakinesi : MonoBehaviour
     {
         // 1. YAZI KONTROLÜ
         if (oyuncuYakindaMi && !makineAcikMi)
+        {
             if (eTusuGorseli != null) eTusuGorseli.SetActive(true);
-            else
+        }
+        else
+        {
             if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
+        }
 
         // 2. E TUÞU (Makineyi Aç/Kapat)
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
             makineAcikMi = !makineAcikMi;
-            if (!makineAcikMi) kesimYapiliyorMu = false; // Makine kapanýrsa kesimi de iptal et
+            if (!makineAcikMi) DurdurKesimveAnimasyon();
         }
 
         // 3. DÖNME ve PÝÞME
@@ -70,11 +73,24 @@ public class DonerMakinesi : MonoBehaviour
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", false);
         }
 
-        // 4. Q TUÞU (YENÝ MEKANÝK: Tek týkla baþlat veya iptal et)
+        // 4. Q TUÞU (BIÇAK ZORUNLULUÐU EKLENDÝ)
         if (oyuncuYakindaMi && makineAcikMi && Input.GetKeyDown(KeyCode.Q))
         {
-            // True ise False yapar, False ise True yapar. (Açma/Kapatma þalteri gibi)
-            kesimYapiliyorMu = !kesimYapiliyorMu;
+            // EÐER OYUNCUNUN ELÝNDE BIÇAK VARSA ÇALIÞ
+            if (makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
+            {
+                kesimYapiliyorMu = !kesimYapiliyorMu;
+
+                // Oyuncunun kesme animasyonunu baþlat/durdur
+                if (makineyeYakinOyuncu.oyuncuAnimator != null)
+                {
+                    makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", kesimYapiliyorMu);
+                }
+            }
+            else
+            {
+                Debug.LogWarning("Usta! Elinde býçak yok, döneri neyle keseceksin?");
+            }
         }
 
         // 5. OTOMATÝK KESÝM ÝÞLEMÝ
@@ -82,24 +98,35 @@ public class DonerMakinesi : MonoBehaviour
         {
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(true);
 
-            kesmeIlerlemesi += Time.deltaTime * kesmeHizi; // Bar kendi kendine dolar
+            kesmeIlerlemesi += Time.deltaTime * kesmeHizi;
             if (yuklemeCubugu != null) yuklemeCubugu.fillAmount = kesmeIlerlemesi;
 
-            if (kesmeIlerlemesi >= 1f) // Çubuk %100 olduðunda
+            if (kesmeIlerlemesi >= 1f)
             {
                 EtKesipDusur();
-                kesmeIlerlemesi = 0f;
-                if (yuklemeCubugu != null) yuklemeCubugu.fillAmount = 0f;
+                DurdurKesimveAnimasyon();
                 pismeSuresi = 0f;
-                kesimYapiliyorMu = false; // Et düþtü, sistemi bekleme moduna geri al
             }
         }
         else
         {
-            // Kesim iptal edildiyse her þeyi gizle ve sýfýrla
             kesmeIlerlemesi = 0f;
             if (yuklemeCubugu != null) yuklemeCubugu.fillAmount = 0f;
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
+        }
+    }
+
+    void DurdurKesimveAnimasyon()
+    {
+        kesimYapiliyorMu = false;
+        kesmeIlerlemesi = 0f;
+        if (yuklemeCubugu != null) yuklemeCubugu.fillAmount = 0f;
+        if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
+
+        // Kesim bittiðinde veya makine kapandýðýnda oyuncunun animasyonunu durdur
+        if (makineyeYakinOyuncu != null && makineyeYakinOyuncu.oyuncuAnimator != null)
+        {
+            makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", false);
         }
     }
 
@@ -115,7 +142,11 @@ public class DonerMakinesi : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) oyuncuYakindaMi = true;
+        if (other.CompareTag("Player"))
+        {
+            oyuncuYakindaMi = true;
+            makineyeYakinOyuncu = other.GetComponent<OyuncuEnvanter>(); // Oyuncuyu kaydet
+        }
     }
 
     private void OnTriggerExit(Collider other)
@@ -123,10 +154,8 @@ public class DonerMakinesi : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             oyuncuYakindaMi = false;
-            kesimYapiliyorMu = false; // Adam uzaklaþýrsa kesimi hemen iptal et
-            kesmeIlerlemesi = 0f;
-            if (yuklemeCubugu != null) yuklemeCubugu.fillAmount = 0f;
-            if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
+            DurdurKesimveAnimasyon();
+            makineyeYakinOyuncu = null;
         }
     }
 }
