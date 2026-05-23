@@ -7,10 +7,21 @@ public class DonerMakinesi : MonoBehaviour
     public bool makineAcikMi = false;
     public Animator donerAnimator;
 
+    [Header("Sýcaklýk ve Soðuma Ayarlarý")]
+    public bool donerSogukMu = false;
+    public float sogumaSayaci = 0f;
+    public float sogumaSiniri = 5f; // 5 saniye kuralý
+
+    [Header("Isýtma Arayüzü")]
+    public GameObject isinmaArayuzObjesi;
+    public Image isinmaBarGorseli;
+    private float isinmaIlerlemesi = 0f;
+    private bool isiniyorMu = false;
+
     [Header("Etkileþim Ayarlarý")]
     public bool oyuncuYakindaMi = false;
     public GameObject eTusuGorseli;
-    private OyuncuEnvanter makineyeYakinOyuncu; // YENÝ: Yakýndaki oyuncunun envanter referansý
+    private OyuncuEnvanter makineyeYakinOyuncu;
 
     [Header("Piþme Ayarlarý")]
     public MeshRenderer donerEtiRenderer;
@@ -37,12 +48,19 @@ public class DonerMakinesi : MonoBehaviour
     {
         if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
         if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
+        if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(false);
     }
 
     void Update()
     {
-        // 1. YAZI KONTROLÜ
-        if (oyuncuYakindaMi && !makineAcikMi)
+        if (isiniyorMu)
+        {
+            DöneriIsit();
+            return;
+        }
+
+        // 1. YAZI KONTROLÜ (GÜNCELLENDÝ: Mantýk hatasý giderildi, yakýndayken yazý hep tetiklenecek)
+        if (oyuncuYakindaMi && !kesimYapiliyorMu)
         {
             if (eTusuGorseli != null) eTusuGorseli.SetActive(true);
         }
@@ -51,18 +69,31 @@ public class DonerMakinesi : MonoBehaviour
             if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
         }
 
-        // 2. E TUÞU (Makineyi Aç/Kapat)
+        // 2. E TUÞU (Açma/Kapama ve Isýtma)
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
-            makineAcikMi = !makineAcikMi;
-            if (!makineAcikMi) DurdurKesimveAnimasyon();
+            if (donerSogukMu && !makineAcikMi)
+            {
+                if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
+                isiniyorMu = true;
+                if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(true);
+            }
+            else
+            {
+                makineAcikMi = !makineAcikMi;
+            }
         }
 
-        // 3. DÖNME ve PÝÞME
+        // 3. DÖNME, PÝÞME ve SOÐUMA
         if (makineAcikMi)
         {
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", true);
-            pismeSuresi += Time.deltaTime;
+            sogumaSayaci = 0f;
+
+            if (pismeSuresi < cokPismisOlmaSiniri)
+            {
+                pismeSuresi += Time.deltaTime;
+            }
 
             if (pismeSuresi >= cokPismisOlmaSiniri) donerEtiRenderer.material = cokPismisMat;
             else if (pismeSuresi >= pismisOlmaSiniri) donerEtiRenderer.material = pismisMat;
@@ -71,29 +102,29 @@ public class DonerMakinesi : MonoBehaviour
         else
         {
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", false);
+
+            sogumaSayaci += Time.deltaTime;
+            if (sogumaSayaci >= sogumaSiniri)
+            {
+                donerSogukMu = true;
+            }
         }
 
-        // 4. Q TUÞU (BIÇAK ZORUNLULUÐU EKLENDÝ)
-        if (oyuncuYakindaMi && makineAcikMi && Input.GetKeyDown(KeyCode.Q))
+        // 4. Q TUÞU (Kesim Baþlatma)
+        if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.Q))
         {
-            // EÐER OYUNCUNUN ELÝNDE BIÇAK VARSA ÇALIÞ
             if (makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
             {
                 kesimYapiliyorMu = !kesimYapiliyorMu;
 
-                // Oyuncunun kesme animasyonunu baþlat/durdur
                 if (makineyeYakinOyuncu.oyuncuAnimator != null)
                 {
                     makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", kesimYapiliyorMu);
                 }
             }
-            else
-            {
-                Debug.LogWarning("Usta! Elinde býçak yok, döneri neyle keseceksin?");
-            }
         }
 
-        // 5. OTOMATÝK KESÝM ÝÞLEMÝ
+        // 5. OTOMATÝK KESÝM
         if (kesimYapiliyorMu)
         {
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(true);
@@ -105,7 +136,6 @@ public class DonerMakinesi : MonoBehaviour
             {
                 EtKesipDusur();
                 DurdurKesimveAnimasyon();
-                pismeSuresi = 0f;
             }
         }
         else
@@ -116,6 +146,22 @@ public class DonerMakinesi : MonoBehaviour
         }
     }
 
+    void DöneriIsit()
+    {
+        isinmaIlerlemesi += Time.deltaTime * 0.5f;
+        if (isinmaBarGorseli != null) isinmaBarGorseli.fillAmount = isinmaIlerlemesi;
+
+        if (isinmaIlerlemesi >= 1f)
+        {
+            donerSogukMu = false;
+            sogumaSayaci = 0f;
+            isinmaIlerlemesi = 0f;
+            isiniyorMu = false;
+            makineAcikMi = true;
+            if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(false);
+        }
+    }
+
     void DurdurKesimveAnimasyon()
     {
         kesimYapiliyorMu = false;
@@ -123,7 +169,6 @@ public class DonerMakinesi : MonoBehaviour
         if (yuklemeCubugu != null) yuklemeCubugu.fillAmount = 0f;
         if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
 
-        // Kesim bittiðinde veya makine kapandýðýnda oyuncunun animasyonunu durdur
         if (makineyeYakinOyuncu != null && makineyeYakinOyuncu.oyuncuAnimator != null)
         {
             makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", false);
@@ -137,25 +182,39 @@ public class DonerMakinesi : MonoBehaviour
             GameObject yeniDilim = Instantiate(donerDilimPrefab, kesimNoktasi.position, Quaternion.identity);
             MeshRenderer dilimRenderer = yeniDilim.GetComponent<MeshRenderer>();
             if (dilimRenderer != null && donerEtiRenderer != null) dilimRenderer.material = donerEtiRenderer.material;
+
+            DonerDilimi dilimScript = yeniDilim.GetComponent<DonerDilimi>();
+            if (dilimScript != null)
+            {
+                dilimScript.sogukMu = this.donerSogukMu;
+            }
         }
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        // GÜNCELLENDÝ: Hem objenin kendisinde hem de üst/alt objelerinde Player tag'i arayan garanti kontrol
+        if (other.CompareTag("Player") || other.transform.root.CompareTag("Player"))
         {
             oyuncuYakindaMi = true;
-            makineyeYakinOyuncu = other.GetComponent<OyuncuEnvanter>(); // Oyuncuyu kaydet
+            makineyeYakinOyuncu = other.GetComponentInChildren<OyuncuEnvanter>() ?? other.GetComponentInParent<OyuncuEnvanter>() ?? other.GetComponent<OyuncuEnvanter>();
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.transform.root.CompareTag("Player"))
         {
             oyuncuYakindaMi = false;
             DurdurKesimveAnimasyon();
             makineyeYakinOyuncu = null;
+
+            if (isiniyorMu)
+            {
+                isiniyorMu = false;
+                isinmaIlerlemesi = 0f;
+                if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(false);
+            }
         }
     }
 }

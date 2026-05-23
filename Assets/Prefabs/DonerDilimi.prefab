@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 2376679211389259165}
   - component: {fileID: 3724536160908751038}
   - component: {fileID: 6151651024510510160}
+  - component: {fileID: -5611385750906572020}
   m_Layer: 0
   m_Name: DonerDilimi
   m_TagString: Untagged
@@ -133,3 +134,16 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &-5611385750906572020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5660020647865969390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b50e2893c7aa7b4b902bbdf5a922779, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sogukMu: 0

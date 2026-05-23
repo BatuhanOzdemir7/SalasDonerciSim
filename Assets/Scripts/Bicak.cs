@@ -13,9 +13,25 @@ public class Bicak : MonoBehaviour
 
     void Update()
     {
-        if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E) && yakindakiOyuncu != null)
+        if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
-            if (!yakindakiOyuncu.bicakVarMi)
+            // GARANTİ ADIM: Eğer referans bir şekilde boşaldıysa, o an yakındaki oyuncuyu tekrar bulmayı dene
+            if (yakindakiOyuncu == null)
+            {
+                // Çevredeki Player tag'li objeden envanteri bulur
+                Collider[] yakinlardakiObjeler = Physics.OverlapSphere(transform.position, 3f);
+                foreach (var obje in yakinlardakiObjeler)
+                {
+                    if (obje.CompareTag("Player"))
+                    {
+                        yakindakiOyuncu = obje.GetComponentInChildren<OyuncuEnvanter>() ?? obje.GetComponentInParent<OyuncuEnvanter>() ?? obje.GetComponent<OyuncuEnvanter>();
+                        break;
+                    }
+                }
+            }
+
+            // Eğer hala oyuncu bulunduysa ve bıçağı yoksa alma sürecini başlat
+            if (yakindakiOyuncu != null && !yakindakiOyuncu.bicakVarMi)
             {
                 yakindakiOyuncu.suAnkiBicakScripti = this;
 
@@ -32,9 +48,17 @@ public class Bicak : MonoBehaviour
 
     public void BicagiEleIsinla()
     {
+        // GÜVENLİK KONTROLÜ: Eğer animasyon event tetiklendiğinde yakindakiOyuncu hala null ise hatayı engelle
+        if (yakindakiOyuncu == null)
+        {
+            Debug.LogError("Bıçak alınmaya çalışılıyor ama oyuncu referansı bulunamadı!");
+            return;
+        }
+
         if (GetComponent<Rigidbody>() != null) GetComponent<Rigidbody>().isKinematic = true;
         if (GetComponent<Collider>() != null) GetComponent<Collider>().enabled = false;
 
+        // Oyuncunun el noktasına jilet gibi yapış
         transform.SetParent(yakindakiOyuncu.elNoktasi);
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
@@ -46,7 +70,6 @@ public class Bicak : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            // Değişiklik burada: Hem objeden hem de üst objelerinden kodu arar
             yakindakiOyuncu = other.GetComponentInChildren<OyuncuEnvanter>() ?? other.GetComponentInParent<OyuncuEnvanter>() ?? other.GetComponent<OyuncuEnvanter>();
 
             if (yakindakiOyuncu != null && !yakindakiOyuncu.bicakVarMi)
