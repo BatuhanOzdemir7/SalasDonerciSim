@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro; // TMPro kütüphanesini ekledik ki yazý metnini deðiþtirebilelim
 
 public class DonerMakinesi : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class DonerMakinesi : MonoBehaviour
     [Header("Sýcaklýk ve Soðuma Ayarlarý")]
     public bool donerSogukMu = false;
     public float sogumaSayaci = 0f;
-    public float sogumaSiniri = 5f; // 5 saniye kuralý
+    public float sogumaSiniri = 5f;
 
     [Header("Isýtma Arayüzü")]
     public GameObject isinmaArayuzObjesi;
@@ -20,7 +21,7 @@ public class DonerMakinesi : MonoBehaviour
 
     [Header("Etkileþim Ayarlarý")]
     public bool oyuncuYakindaMi = false;
-    public GameObject eTusuGorseli;
+    public TextMeshProUGUI eTusuYazisi; // GameObject yerine TextMeshProUGUI olarak güncelledik!
     private OyuncuEnvanter makineyeYakinOyuncu;
 
     [Header("Piþme Ayarlarý")]
@@ -47,7 +48,7 @@ public class DonerMakinesi : MonoBehaviour
     void Start()
     {
         if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
-        if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
+        if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(false);
     }
 
@@ -59,22 +60,41 @@ public class DonerMakinesi : MonoBehaviour
             return;
         }
 
-        // 1. YAZI KONTROLÜ (GÜNCELLENDÝ: Mantýk hatasý giderildi, yakýndayken yazý hep tetiklenecek)
+        // 1. DÝNAMÝK YAZI KONTROLÜ (DÜZELTÝLDÝ: Duruma göre yazý metni deðiþiyor)
         if (oyuncuYakindaMi && !kesimYapiliyorMu)
         {
-            if (eTusuGorseli != null) eTusuGorseli.SetActive(true);
+            if (eTusuYazisi != null)
+            {
+                eTusuYazisi.gameObject.SetActive(true);
+
+                // Eðer döner soðuksa öncelik ýsýtma uyarýsý olsun
+                if (donerSogukMu && !makineAcikMi)
+                {
+                    eTusuYazisi.text = "Döneri Isýtmak Ýçin E'ye Bas";
+                }
+                // Makine zaten açýk durumdaysa kapatma uyarýsý yazsýn
+                else if (makineAcikMi)
+                {
+                    eTusuYazisi.text = "Makineyi Kapatmak Ýçin E'ye Bas";
+                }
+                // Makine kapalý ve döner sýcaksa açma uyarýsý yazsýn
+                else
+                {
+                    eTusuYazisi.text = "Makineyi Açmak Ýçin E'ye Bas";
+                }
+            }
         }
         else
         {
-            if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
+            if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         }
 
-        // 2. E TUÞU (Açma/Kapama ve Isýtma)
+        // 2. E TUÞU
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
             if (donerSogukMu && !makineAcikMi)
             {
-                if (eTusuGorseli != null) eTusuGorseli.SetActive(false);
+                if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
                 isiniyorMu = true;
                 if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(true);
             }
@@ -110,7 +130,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // 4. Q TUÞU (Kesim Baþlatma)
+        // 4. Q TUÞU
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.Q))
         {
             if (makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
@@ -193,7 +213,6 @@ public class DonerMakinesi : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // GÜNCELLENDÝ: Hem objenin kendisinde hem de üst/alt objelerinde Player tag'i arayan garanti kontrol
         if (other.CompareTag("Player") || other.transform.root.CompareTag("Player"))
         {
             oyuncuYakindaMi = true;
