@@ -58,7 +58,11 @@ public class OyuncuEnvanter : MonoBehaviour
         if (rb != null) rb.isKinematic = true;
     }
 
-    // ARTIK TABAK DEÐÝL TEPSÝ DÖNDÜRÜYOR
+    public void EldenBirak()
+    {
+        eldeTutulanObje = null;
+    }
+
     public Tray GetHeldTray()
     {
         if (eldeTutulanObje != null)
@@ -68,23 +72,18 @@ public class OyuncuEnvanter : MonoBehaviour
         return null;
     }
 
+    // GÜNCELLENEN KISIM: Animasyon event'i artýk býçaðýn hafýzasýný silmeyecek
     public void NesneyiEleYapistirEvent()
     {
         if (suAnkiBicakScripti != null)
         {
             suAnkiBicakScripti.BicagiEleIsinla();
-            suAnkiBicakScripti = null;
+            // suAnkiBicakScripti = null; satýrý tamamen kaldýrýldý
         }
 
         if (oyuncuAnimator != null)
         {
             oyuncuAnimator.ResetTrigger("isPickingUp");
         }
-    }
-
-    // Oyuncunun elindeki objeyi referanstan temizler, böylece býçak veya baþka eþya alabilir
-    public void EldenBirak()
-    {
-        eldeTutulanObje = null;
     }
 }

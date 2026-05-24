@@ -45,17 +45,15 @@ public class Tray : MonoBehaviour, IInteractable
         {
             if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(false);
             if (durumGorseli != null) durumGorseli.SetActive(true);
-            if (etSayaciYazisi != null) etSayaciYazisi.gameObject.SetActive(false);
         }
         else
         {
             if (durumGorseli != null) durumGorseli.SetActive(false);
-            if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(tepsidekiEtSayisi > 0);
 
-            if (etSayaciYazisi != null)
+            // Tepside et varsa etlerin biriktiði 3D modeli görünür yapýyoruz
+            if (etGorselleriGrubu != null)
             {
-                etSayaciYazisi.gameObject.SetActive(true);
-                etSayaciYazisi.text = tepsidekiEtSayisi.ToString();
+                etGorselleriGrubu.SetActive(tepsidekiEtSayisi > 0);
             }
         }
     }

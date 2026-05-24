@@ -1,29 +1,107 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class TrayStack : MonoBehaviour, IInteractable
 {
-    // Inspector panelinden 7 tabaðý bu listeye sürükle
-    public List<GameObject> tabaklar;
+    [Header("Yýðýn Ayarlarý")]
+    public GameObject tepsiPrefab;
+
+    // Artýk Inspector'dan elle doldurmana gerek yok, kod otomatik listeyi temizleyip baþtan dizecek
+    [HideInInspector] public List<GameObject> gorselTepsiler = new List<GameObject>();
+    [HideInInspector] public int mevcutTepsiSayisi;
+
+    [Header("Arayüz Ayarlarý")]
+    public TextMeshPro yiginSayaciYazisi;
+
+    void Start()
+    {
+        gorselTepsiler.Clear();
+
+        // 1. Yýðýnýn altýndaki tüm nesneleri tarayarak listeyi otomatik oluþturur
+        foreach (Transform child in transform)
+        {
+            if (child.name.ToLower().Contains("tepsi"))
+            {
+                gorselTepsiler.Add(child.gameObject);
+
+                // KESÝN ÇÖZÜM: Yýðýndaki dekoratif tepsilerin lazeri sabote etmesini engellemek için
+                // kendi bireysel collider bileþenlerini oyun baþýnda kapatýyoruz.
+                Collider childCol = child.GetComponent<Collider>();
+                if (childCol != null)
+                {
+                    childCol.enabled = false;
+                }
+            }
+        }
+
+        // 2. Tepsileri yüksekliklerine (Y ekseni) göre alttan üste doðru hizalar
+        gorselTepsiler.Sort((a, b) => a.transform.position.y.CompareTo(b.transform.position.y));
+
+        // 3. Sayacý tam mevcut adet üzerinden eþitleyip çalýþtýrýr
+        mevcutTepsiSayisi = gorselTepsiler.Count;
+        SayaciGuncelle();
+    }
 
     public void Interact(OyuncuEnvanter oyuncu)
     {
-        if (tabaklar.Count > 0)
+        Tray eldekiTepsi = oyuncu.GetHeldTray();
+
+        // DURUM 1: Oyuncunun Eli Boþsa (Yýðýndan tepsi al)
+        if (eldekiTepsi == null && !oyuncu.bicakVarMi)
         {
-            // Listenin son elemanýný (fiziksel olarak en üstteki tabaðý) seç
-            int sonIndex = tabaklar.Count - 1;
-            GameObject ustTabak = tabaklar[sonIndex];
+            if (mevcutTepsiSayisi > 0)
+            {
+                // Önce sayýyý düþür ve o indeksteki (en üstteki) 3D modeli görünmez yap
+                mevcutTepsiSayisi--;
+                if (mevcutTepsiSayisi < gorselTepsiler.Count && gorselTepsiler[mevcutTepsiSayisi] != null)
+                {
+                    gorselTepsiler[mevcutTepsiSayisi].SetActive(false);
+                }
 
-            // Tabaðý yýðýndan çýkar
-            tabaklar.RemoveAt(sonIndex);
+                // Oyuncunun eline baðýmsýz, temiz bir tepsi üretip ver
+                GameObject yeniTepsi = Instantiate(tepsiPrefab);
+                oyuncu.PickUpItem(yeniTepsi);
 
-            // Oyuncuya tabaðý ver
-            oyuncu.PickUpItem(ustTabak);
-            Debug.Log("Yýðýndan 1 tabak alýndý. Kalan tabak: " + tabaklar.Count);
+                SayaciGuncelle();
+                Debug.Log("Tepsi baþarýyla alýndý. Kalan temiz adet: " + mevcutTepsiSayisi);
+            }
+        }
+        // DURUM 2: Oyuncunun Elinde Boþ Tepsi Varsý (Yýðýna geri býrak)
+        else if (eldekiTepsi != null)
+        {
+            if (eldekiTepsi.tepsidekiEtSayisi == 0 && !eldekiTepsi.isDurum && eldekiTepsi.eklenenMalzemeler.Count == 0)
+            {
+                oyuncu.EldenBirak();
+                Destroy(eldekiTepsi.gameObject);
+
+                // Yýðýndaki en üstteki kapalý olan tepsiyi yeniden görünür yap
+                if (mevcutTepsiSayisi < gorselTepsiler.Count && gorselTepsiler[mevcutTepsiSayisi] != null)
+                {
+                    gorselTepsiler[mevcutTepsiSayisi].SetActive(true);
+                }
+
+                mevcutTepsiSayisi++;
+                SayaciGuncelle();
+                Debug.Log("Tepsi yýðýna geri konuldu. Toplam: " + mevcutTepsiSayisi);
+            }
+        }
+    }
+
+    public void SayaciGuncelle()
+    {
+        if (yiginSayaciYazisi == null) return;
+
+        if (mevcutTepsiSayisi > 0)
+        {
+            yiginSayaciYazisi.gameObject.SetActive(true);
+            yiginSayaciYazisi.text = mevcutTepsiSayisi.ToString();
+            yiginSayaciYazisi.color = Color.white;
         }
         else
         {
-            Debug.Log("Yýðýnda tabak kalmadý!");
+            yiginSayaciYazisi.text = "Tepsi Bitti!";
+            yiginSayaciYazisi.color = Color.red;
         }
     }
 }
