@@ -11,7 +11,7 @@ public class OyuncuEnvanter : MonoBehaviour
 
     [HideInInspector] public Bicak suAnkiBicakScripti;
 
-    [Header("Yeni Etkileþim Ayarlarý (Tepsi)")]
+    [Header("Etkileþim Ayarlarý (Lazer)")]
     public Transform isinCikisNoktasi;
     public float etkilesimMesafesi = 3f;
 
@@ -63,6 +63,16 @@ public class OyuncuEnvanter : MonoBehaviour
         eldeTutulanObje = null;
     }
 
+    // Malzemeyi dolaba geri koyduðunda onu dünyadan siler
+    public void EldenBirakVeSil()
+    {
+        if (eldeTutulanObje != null)
+        {
+            Destroy(eldeTutulanObje);
+            eldeTutulanObje = null;
+        }
+    }
+
     public Tray GetHeldTray()
     {
         if (eldeTutulanObje != null)
@@ -72,13 +82,21 @@ public class OyuncuEnvanter : MonoBehaviour
         return null;
     }
 
-    // GÜNCELLENEN KISIM: Animasyon event'i artýk býçaðýn hafýzasýný silmeyecek
+    // Oyuncunun elindeki objenin bir "Malzeme" olup olmadýðýný kontrol eder
+    public Malzeme GetHeldMalzeme()
+    {
+        if (eldeTutulanObje != null)
+        {
+            return eldeTutulanObje.GetComponent<Malzeme>();
+        }
+        return null;
+    }
+
     public void NesneyiEleYapistirEvent()
     {
         if (suAnkiBicakScripti != null)
         {
             suAnkiBicakScripti.BicagiEleIsinla();
-            // suAnkiBicakScripti = null; satýrý tamamen kaldýrýldý
         }
 
         if (oyuncuAnimator != null)
