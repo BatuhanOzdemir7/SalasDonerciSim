@@ -11,26 +11,94 @@ public class OyuncuEnvanter : MonoBehaviour
 
     [HideInInspector] public Bicak suAnkiBicakScripti;
 
-    // Animasyon tam elin nesneye deðdiði an bu fonksiyonu çaðýracak (Animation Event)
+    [Header("Etkileþim Ayarlarý (Lazer)")]
+    public Transform isinCikisNoktasi;
+    public float etkilesimMesafesi = 3f;
+
+    private GameObject eldeTutulanObje;
+
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            EtkilesimiKontrolEt();
+        }
+    }
+
+    void EtkilesimiKontrolEt()
+    {
+        if (isinCikisNoktasi == null) return;
+
+        RaycastHit hit;
+        if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
+        {
+            Debug.Log("LAZER ÞUNA ÇARPTI: " + hit.collider.gameObject.name);
+
+            IInteractable etkilesimliObje = hit.collider.GetComponentInParent<IInteractable>();
+            if (etkilesimliObje != null)
+            {
+                etkilesimliObje.Interact(this);
+            }
+        }
+    }
+
+    public void PickUpItem(GameObject alinacakObje)
+    {
+        if (eldeTutulanObje != null) return;
+
+        eldeTutulanObje = alinacakObje;
+        eldeTutulanObje.transform.SetParent(elNoktasi);
+        eldeTutulanObje.transform.localPosition = Vector3.zero;
+        eldeTutulanObje.transform.localRotation = Quaternion.identity;
+
+        Collider col = eldeTutulanObje.GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        Rigidbody rb = eldeTutulanObje.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+    }
+
+    public void EldenBirak()
+    {
+        eldeTutulanObje = null;
+    }
+
+    // Malzemeyi dolaba geri koyduðunda onu dünyadan siler
+    public void EldenBirakVeSil()
+    {
+        if (eldeTutulanObje != null)
+        {
+            Destroy(eldeTutulanObje);
+            eldeTutulanObje = null;
+        }
+    }
+
+    public Tray GetHeldTray()
+    {
+        if (eldeTutulanObje != null)
+        {
+            return eldeTutulanObje.GetComponent<Tray>();
+        }
+        return null;
+    }
+
+    // Oyuncunun elindeki objenin bir "Malzeme" olup olmadýðýný kontrol eder
+    public Malzeme GetHeldMalzeme()
+    {
+        if (eldeTutulanObje != null)
+        {
+            return eldeTutulanObje.GetComponent<Malzeme>();
+        }
+        return null;
+    }
+
     public void NesneyiEleYapistirEvent()
     {
-        // 1. BIÇAK ÝÇÝN ALMA MANTIÐI
         if (suAnkiBicakScripti != null)
         {
             suAnkiBicakScripti.BicagiEleIsinla();
-            suAnkiBicakScripti = null; // Ýþ bitince hafýzayý temizle
         }
 
-        // 2. YARIN BÝR GÜN TABAK EKLEDÝÐÝNDE SADECE BURAYA ÞUNU YAZACAKSIN:
-        /*
-        if (suAnkiTabakScripti != null)
-        {
-            suAnkiTabakScripti.TabagiEleIsinla();
-            suAnkiTabakScripti = null;
-        }
-        */
-
-        // BU SATIR SÝHRÝ YAPACAK: Animasyonun loopta kalmasýný engeller, tetikleyiciyi sýfýrlar!
         if (oyuncuAnimator != null)
         {
             oyuncuAnimator.ResetTrigger("isPickingUp");
