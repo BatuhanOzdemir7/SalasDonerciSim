@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro; // TMPro kütüphanesini ekledik ki yazý metnini deðiþtirebilelim
+using System.Collections;
 
 public class DonerMakinesi : MonoBehaviour
 {
@@ -44,6 +45,9 @@ public class DonerMakinesi : MonoBehaviour
     [Header("Düþen Et Ayarlarý")]
     public GameObject donerDilimPrefab;
     public Transform kesimNoktasi;
+
+    [Header("Tepsi Baðlantýsý")]
+    public TepsiBirakmaNoktasi tepsiNoktasi; // Kýrmýzý alandaki scripti buraya sürükleyeceðiz
 
     void Start()
     {
@@ -194,21 +198,77 @@ public class DonerMakinesi : MonoBehaviour
             makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", false);
         }
     }
-
     void EtKesipDusur()
     {
         if (donerDilimPrefab != null && kesimNoktasi != null)
         {
+            // 1. Eti havada, kesim noktasýnda fiziksel 3D model olarak yarat
             GameObject yeniDilim = Instantiate(donerDilimPrefab, kesimNoktasi.position, Quaternion.identity);
+
+            // 2. Piþmiþlik rengini yeni düþen ete aktar
             MeshRenderer dilimRenderer = yeniDilim.GetComponent<MeshRenderer>();
-            if (dilimRenderer != null && donerEtiRenderer != null) dilimRenderer.material = donerEtiRenderer.material;
+            if (dilimRenderer != null && donerEtiRenderer != null)
+            {
+                dilimRenderer.material = donerEtiRenderer.material;
+            }
 
             DonerDilimi dilimScript = yeniDilim.GetComponent<DonerDilimi>();
             if (dilimScript != null)
             {
                 dilimScript.sogukMu = this.donerSogukMu;
             }
+
+            // 3. Kýrmýzý alanda tepsi var mý kontrol et
+            if (tepsiNoktasi != null && tepsiNoktasi.ustundekiTepsi != null)
+            {
+                // Tepsi varsa animasyonlu düþüþ sürecini baþlat
+                StartCoroutine(TepsiyeDusmeAnimasyonu(yeniDilim, tepsiNoktasi.ustundekiTepsi));
+            }
+            else
+            {
+                // Tepsi yoksa et serbest düþüþle (fizikle) tezgaha/yere düþer
+                Debug.LogWarning("Ocaðýn yanýna tepsi koymadýðýn için et tezgaha düþtü!");
+            }
         }
+    }
+
+    // Zaman ayarlý düþme animasyon sistemi
+    IEnumerator TepsiyeDusmeAnimasyonu(GameObject dilim, Tray hedefTepsi)
+    {
+        // Etin saða sola sekmesini engellemek için fiziksel çarpýþmasýný geçici kapatýyoruz
+        Rigidbody rb = dilim.GetComponent<Rigidbody>();
+        if (rb != null) rb.isKinematic = true;
+
+        Collider col = dilim.GetComponent<Collider>();
+        if (col != null) col.enabled = false;
+
+        float gecenSure = 0f;
+        float animasyonSuresi = 0.35f; // Etin havada kalma ve düþme süresi (Hýzlandýrmak istersen 0.2 yapabilirsin)
+        Vector3 baslangicPozisyonu = dilim.transform.position;
+        Vector3 hedefPozisyon = hedefTepsi.transform.position;
+
+        // Belirlenen süre boyunca eti yukarýdan aþaðýya doðru kaydýr
+        // ... (Üstteki Lerp kodlarý ayný kalýyor)
+        while (gecenSure < animasyonSuresi)
+        {
+            gecenSure += Time.deltaTime;
+            float oran = gecenSure / animasyonSuresi;
+            dilim.transform.position = Vector3.Lerp(baslangicPozisyonu, hedefPozisyon, oran);
+            yield return null;
+        }
+
+        // Et tepsiye ulaþtýðýnda yapýlacak iþlemler:
+        hedefTepsi.tepsidekiEtSayisi++;
+        hedefTepsi.isMeatCold = this.donerSogukMu;
+        hedefTepsi.GorselleriGuncelle();
+
+        // YENÝ DÜZENLEME: Ýstasyonun üzerindeki 3D yazýyý anlýk olarak tetikliyoruz
+        if (tepsiNoktasi != null)
+        {
+            tepsiNoktasi.SayaciGuncelle();
+        }
+
+        Destroy(dilim);
     }
 
     private void OnTriggerEnter(Collider other)

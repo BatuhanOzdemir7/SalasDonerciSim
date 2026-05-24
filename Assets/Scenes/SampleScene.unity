@@ -1194,10 +1194,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &343183167
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1594,10 +1597,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &433187823
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1619,63 +1625,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.39999998, y: 0.020000044, z: 0.29999995}
   m_Center: {x: 0, y: 0.010000002, z: 0}
---- !u!1001 &482670840
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 100000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_Name
-      value: bowl02
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -1.6314745
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 2.891
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: abe0f3cb09164c048b3cba749efab044, type: 3}
 --- !u!1 &482785555
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,10 +1781,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &496004765
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2389,10 +2341,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &649888746
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2963,10 +2918,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &749695981
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3502,6 +3460,75 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 821145120}
   m_CullTransparentMesh: 1
+--- !u!1 &874711180
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 874711183}
+  - component: {fileID: 874711182}
+  - component: {fileID: 874711181}
+  m_Layer: 0
+  m_Name: Tepsi_Birakma_Yeri
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &874711181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874711180}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 1345427397}
+  ustundekiTepsi: {fileID: 0}
+--- !u!65 &874711182
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874711180}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &874711183
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 874711180}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.47, y: 2.005, z: 2.68}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1345427397}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &943368372
 GameObject:
   m_ObjectHideFlags: 0
@@ -4637,10 +4664,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1133745290
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4684,10 +4714,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1149083114
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4731,10 +4764,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1176340094
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4809,10 +4845,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1209989515
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4961,10 +5000,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1231642981
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5388,10 +5430,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1339579907
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5413,6 +5458,37 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.39999998, y: 0.020000044, z: 0.29999995}
   m_Center: {x: 0, y: 0.010000002, z: 0}
+--- !u!1 &1345427396
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1345427397}
+  m_Layer: 0
+  m_Name: Durma_Noktasi
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1345427397
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1345427396}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 874711183}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!850595691 &1359412314
 LightingSettings:
   m_ObjectHideFlags: 0
@@ -6871,10 +6947,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1544107993
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -6918,10 +6997,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &1601269035
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8197,7 +8279,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 85453bf5be4d44a4e91dfd1a2ae7bee9, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 3.16
+      value: 3.673
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 85453bf5be4d44a4e91dfd1a2ae7bee9, type: 3}
       propertyPath: m_LocalRotation.w
@@ -8266,8 +8348,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 0.22988087, y: 0.9939486, z: 0.2363503}
-  m_Center: {x: 0.02731894, y: 0.50922924, z: 0.022440791}
+  m_Size: {x: 0.35162064, y: 0.9939486, z: 0.46075892}
+  m_Center: {x: -0.033550978, y: 0.50922924, z: -0.06964433}
 --- !u!114 &1918865571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8280,8 +8362,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b448b3590fad134d82f4a046207dd97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  oyuncuYakindaMi: 0
-  bicakAlYazisi: {fileID: 821145120}
 --- !u!1001 &1923598437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8925,10 +9005,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07973b6d6a248594787281d5dcb84c2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tabaktakiEtSayisi: 0
+  tepsidekiEtSayisi: 0
   isMeatCold: 0
   isDurum: 0
   eklenenMalzemeler: []
+  etGorselleriGrubu: {fileID: 0}
+  durumGorseli: {fileID: 0}
+  etSayaciYazisi: {fileID: 0}
 --- !u!65 &2035551262
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9087,6 +9170,7 @@ MonoBehaviour:
   kesimYapiliyorMu: 0
   donerDilimPrefab: {fileID: 5660020647865969390, guid: 9cf4a78b581c7dc46962f96643f32d6d, type: 3}
   kesimNoktasi: {fileID: 1338073360}
+  tepsiNoktasi: {fileID: 874711181}
 --- !u!65 &2048538666
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9436,7 +9520,7 @@ SceneRoots:
   - {fileID: 1124314842}
   - {fileID: 604203459}
   - {fileID: 779459778}
-  - {fileID: 482670840}
   - {fileID: 1513744467}
   - {fileID: 943368373}
   - {fileID: 191980879}
+  - {fileID: 874711183}

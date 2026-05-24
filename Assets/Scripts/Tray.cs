@@ -1,37 +1,62 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class Tray : MonoBehaviour, IInteractable
 {
-    // Tabak Veri Mantýðý
-    public int tabaktakiEtSayisi = 0;
+    [Header("Tepsi Ýçerik Verileri")]
+    public int tepsidekiEtSayisi = 0;
     public bool isMeatCold = false;
     public bool isDurum = false;
-
-    // Eklenen malzemelerin listesi
     public List<string> eklenenMalzemeler = new List<string>();
+
+    [Header("3D Görseller")]
+    public GameObject etGorselleriGrubu;
+    public GameObject durumGorseli;
+    public TextMeshPro etSayaciYazisi;
+
+    // EKSÝK OLAN VE HATAYA SEBEP OLAN DEÐÝÞKEN BURASI
+    [HideInInspector] public Vector3 orijinalBoyut;
+
+    void Start()
+    {
+        // Oyun baþladýðý an tepsinin sahnede duran normal boyutunu (2.5) kaydet
+        orijinalBoyut = transform.localScale;
+        GorselleriGuncelle();
+    }
 
     public void Interact(OyuncuEnvanter oyuncu)
     {
-        // Tabak Alma Sistemi: Týpký býçak gibi ele alma fonksiyonu
         oyuncu.PickUpItem(this.gameObject);
-        Debug.Log("Boþ/Dolu tabak ele alýndý.");
     }
 
-    public void MalzemeEkle(string malzemeAdi)
+    public void TepsiyiSifirla()
     {
-        if (!eklenenMalzemeler.Contains(malzemeAdi))
-        {
-            eklenenMalzemeler.Add(malzemeAdi);
-            Debug.Log(malzemeAdi + " tabaða eklendi.");
-        }
-    }
-
-    public void TabagiSifirla()
-    {
-        tabaktakiEtSayisi = 0;
+        tepsidekiEtSayisi = 0;
         isMeatCold = false;
         isDurum = false;
         eklenenMalzemeler.Clear();
+        GorselleriGuncelle();
+    }
+
+    public void GorselleriGuncelle()
+    {
+        if (isDurum)
+        {
+            if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(false);
+            if (durumGorseli != null) durumGorseli.SetActive(true);
+            if (etSayaciYazisi != null) etSayaciYazisi.gameObject.SetActive(false);
+        }
+        else
+        {
+            if (durumGorseli != null) durumGorseli.SetActive(false);
+            if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(tepsidekiEtSayisi > 0);
+
+            if (etSayaciYazisi != null)
+            {
+                etSayaciYazisi.gameObject.SetActive(true);
+                etSayaciYazisi.text = tepsidekiEtSayisi.ToString();
+            }
+        }
     }
 }
