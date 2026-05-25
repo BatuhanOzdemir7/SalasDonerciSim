@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using TMPro;
 
-public class Tray : MonoBehaviour, IInteractable
+public class Tray : MonoBehaviour
 {
     [Header("Tepsi Ýçerik Verileri")]
     public int tepsidekiEtSayisi = 0;
@@ -10,51 +10,76 @@ public class Tray : MonoBehaviour, IInteractable
     public bool isDurum = false;
     public List<string> eklenenMalzemeler = new List<string>();
 
-    [Header("3D Görseller")]
+    [Header("Transform Verileri")]
+    public Vector3 orijinalBoyut; // Silinen ve hataya sebep olan deðiþken geri eklendi
+
+    [Header("Eski 3D Görseller")]
     public GameObject etGorselleriGrubu;
     public GameObject durumGorseli;
-    public TextMeshPro etSayaciYazisi;
+    public TMP_Text etSayaciYazisi;
 
-    // EKSÝK OLAN VE HATAYA SEBEP OLAN DEÐÝÞKEN BURASI
-    [HideInInspector] public Vector3 orijinalBoyut;
+    [Header("Yeni Fiziksel Et Yýðýný")]
+    public GameObject kesilmisEtPrefab;
+    public Transform etlerinBirikecegiNokta;
+    public float etKalinligi = 0.02f;
+
+    private List<GameObject> birikenEtGorselleri = new List<GameObject>();
 
     void Start()
     {
-        // Oyun baþladýðý an tepsinin sahnede duran normal boyutunu (2.5) kaydet
-        orijinalBoyut = transform.localScale;
-        GorselleriGuncelle();
+        // Oyun baþladýðýnda orijinal boyut ayarlanmamýþsa (0,0,0 ise), 
+        // tepsinin o anki gerçek boyutunu orijinal boyut olarak hafýzaya kazýr.
+        if (orijinalBoyut == Vector3.zero)
+        {
+            orijinalBoyut = transform.localScale;
+        }
     }
 
-    public void Interact(OyuncuEnvanter oyuncu)
+    public bool TepsiBosMu()
     {
-        oyuncu.PickUpItem(this.gameObject);
+        return tepsidekiEtSayisi == 0 && !isDurum && eklenenMalzemeler.Count == 0;
+    }
+
+    public void GorselleriGuncelle()
+    {
+        if (etSayaciYazisi != null)
+        {
+            etSayaciYazisi.text = tepsidekiEtSayisi.ToString();
+        }
+    }
+
+    public void EtEkle()
+    {
+        tepsidekiEtSayisi++;
+
+        if (kesilmisEtPrefab != null && etlerinBirikecegiNokta != null)
+        {
+            GameObject yeniEtGorseli = Instantiate(kesilmisEtPrefab, etlerinBirikecegiNokta);
+            float rastgeleAci = Random.Range(0f, 360f);
+            float yukariKayma = (tepsidekiEtSayisi - 1) * etKalinligi;
+
+            yeniEtGorseli.transform.localPosition = new Vector3(0, yukariKayma, 0);
+            yeniEtGorseli.transform.localRotation = Quaternion.Euler(0, rastgeleAci, 0);
+
+            birikenEtGorselleri.Add(yeniEtGorseli);
+        }
+
+        GorselleriGuncelle();
     }
 
     public void TepsiyiSifirla()
     {
         tepsidekiEtSayisi = 0;
-        isMeatCold = false;
         isDurum = false;
+        isMeatCold = false;
         eklenenMalzemeler.Clear();
+
+        foreach (GameObject et in birikenEtGorselleri)
+        {
+            Destroy(et);
+        }
+        birikenEtGorselleri.Clear();
+
         GorselleriGuncelle();
-    }
-
-    public void GorselleriGuncelle()
-    {
-        if (isDurum)
-        {
-            if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(false);
-            if (durumGorseli != null) durumGorseli.SetActive(true);
-        }
-        else
-        {
-            if (durumGorseli != null) durumGorseli.SetActive(false);
-
-            // Tepside et varsa etlerin biriktiði 3D modeli görünür yapýyoruz
-            if (etGorselleriGrubu != null)
-            {
-                etGorselleriGrubu.SetActive(tepsidekiEtSayisi > 0);
-            }
-        }
     }
 }

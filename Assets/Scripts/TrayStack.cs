@@ -47,44 +47,50 @@ public class TrayStack : MonoBehaviour, IInteractable
     {
         Tray eldekiTepsi = oyuncu.GetHeldTray();
 
-        // DURUM 1: Oyuncunun Eli Boþsa (Yýðýndan tepsi al)
+        // DURUM 1: Oyuncunun elinde halihazýrda DOLU bir tepsi varsa
+        // ÖNEMLÝ: Bu kontrolü en baþa aldýk ki iþlem anýnda engellensin
+        if (eldekiTepsi != null && !eldekiTepsi.TepsiBosMu())
+        {
+            Debug.Log("Dolu tepsiyi istasyona koyamazsýn! Önce içindekileri çöpe dökmelisin.");
+            return;
+        }
+
+        // DURUM 2: Oyuncunun Eli Tamamen Boþsa (Yýðýndan tepsi al)
         if (eldekiTepsi == null && !oyuncu.bicakVarMi)
         {
             if (mevcutTepsiSayisi > 0)
             {
-                // Önce sayýyý düþür ve o indeksteki (en üstteki) 3D modeli görünmez yap
                 mevcutTepsiSayisi--;
                 if (mevcutTepsiSayisi < gorselTepsiler.Count && gorselTepsiler[mevcutTepsiSayisi] != null)
                 {
                     gorselTepsiler[mevcutTepsiSayisi].SetActive(false);
                 }
 
-                // Oyuncunun eline baðýmsýz, temiz bir tepsi üretip ver
                 GameObject yeniTepsi = Instantiate(tepsiPrefab);
                 oyuncu.PickUpItem(yeniTepsi);
 
                 SayaciGuncelle();
                 Debug.Log("Tepsi baþarýyla alýndý. Kalan temiz adet: " + mevcutTepsiSayisi);
             }
-        }
-        // DURUM 2: Oyuncunun Elinde Boþ Tepsi Varsý (Yýðýna geri býrak)
-        else if (eldekiTepsi != null)
-        {
-            if (eldekiTepsi.tepsidekiEtSayisi == 0 && !eldekiTepsi.isDurum && eldekiTepsi.eklenenMalzemeler.Count == 0)
+            else
             {
-                oyuncu.EldenBirak();
-                Destroy(eldekiTepsi.gameObject);
-
-                // Yýðýndaki en üstteki kapalý olan tepsiyi yeniden görünür yap
-                if (mevcutTepsiSayisi < gorselTepsiler.Count && gorselTepsiler[mevcutTepsiSayisi] != null)
-                {
-                    gorselTepsiler[mevcutTepsiSayisi].SetActive(true);
-                }
-
-                mevcutTepsiSayisi++;
-                SayaciGuncelle();
-                Debug.Log("Tepsi yýðýna geri konuldu. Toplam: " + mevcutTepsiSayisi);
+                Debug.Log("Yýðýnda alýnacak tepsi kalmadý!");
             }
+        }
+        // DURUM 3: Oyuncunun Elinde BOÞ Bir Tepsi Varsa (Yýðýna geri býrak)
+        else if (eldekiTepsi != null && eldekiTepsi.TepsiBosMu())
+        {
+            oyuncu.EldenBirak();
+            Destroy(eldekiTepsi.gameObject);
+
+            if (mevcutTepsiSayisi < gorselTepsiler.Count && gorselTepsiler[mevcutTepsiSayisi] != null)
+            {
+                gorselTepsiler[mevcutTepsiSayisi].SetActive(true);
+            }
+
+            mevcutTepsiSayisi++;
+            SayaciGuncelle();
+            Debug.Log("Tepsi yýðýna geri konuldu. Toplam: " + mevcutTepsiSayisi);
         }
     }
 

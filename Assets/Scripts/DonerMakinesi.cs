@@ -243,12 +243,14 @@ public class DonerMakinesi : MonoBehaviour
         if (col != null) col.enabled = false;
 
         float gecenSure = 0f;
-        float animasyonSuresi = 0.35f; // Etin havada kalma ve düþme süresi (Hýzlandýrmak istersen 0.2 yapabilirsin)
+        float animasyonSuresi = 0.35f;
         Vector3 baslangicPozisyonu = dilim.transform.position;
-        Vector3 hedefPozisyon = hedefTepsi.transform.position;
 
-        // Belirlenen süre boyunca eti yukarýdan aþaðýya doðru kaydýr
-        // ... (Üstteki Lerp kodlarý ayný kalýyor)
+        // Etin, tepsinin merkezine deðil doðrudan "Et Noktasýna" gitmesini saðlýyoruz
+        Vector3 hedefPozisyon = hedefTepsi.etlerinBirikecegiNokta != null
+            ? hedefTepsi.etlerinBirikecegiNokta.position
+            : hedefTepsi.transform.position;
+
         while (gecenSure < animasyonSuresi)
         {
             gecenSure += Time.deltaTime;
@@ -257,18 +259,18 @@ public class DonerMakinesi : MonoBehaviour
             yield return null;
         }
 
-        // Et tepsiye ulaþtýðýnda yapýlacak iþlemler:
-        hedefTepsi.tepsidekiEtSayisi++;
-        hedefTepsi.isMeatCold = this.donerSogukMu;
-        hedefTepsi.GorselleriGuncelle();
+        // ESKÝ HATA BURADAYDI: Sadece sayacý artýrýp eti "Destroy" yapýyorduk.
+        // YENÝ SÝSTEM: Uçuþ animasyonu bitince o sahte animasyon etini siliyoruz ve 
+        // Tray.cs içindeki, eti rastgele açýlarla üst üste dizen fiziksel EtEkle() sistemini tetikliyoruz.
+        Destroy(dilim);
 
-        // YENÝ DÜZENLEME: Ýstasyonun üzerindeki 3D yazýyý anlýk olarak tetikliyoruz
+        hedefTepsi.EtEkle();
+        hedefTepsi.isMeatCold = this.donerSogukMu;
+
         if (tepsiNoktasi != null)
         {
             tepsiNoktasi.SayaciGuncelle();
         }
-
-        Destroy(dilim);
     }
 
     private void OnTriggerEnter(Collider other)
