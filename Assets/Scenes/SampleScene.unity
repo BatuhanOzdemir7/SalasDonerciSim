@@ -1830,7 +1830,7 @@ MonoBehaviour:
   marulPrefab: {fileID: 748130103}
   tursuPrefab: {fileID: 1453311963}
   soganPrefab: {fileID: 962469907}
-  lavasPrefab: {fileID: 0}
+  lavasPrefab: {fileID: 9222104339983900935, guid: 2010dc43f04021b4c9bedc79f1c95448, type: 3}
   cigTavukPrefab: {fileID: 1974596180}
 --- !u!65 &366473754
 BoxCollider:
@@ -8555,6 +8555,7 @@ Transform:
   m_Children:
   - {fileID: 311570145}
   - {fileID: 1935542156}
+  - {fileID: 1669011035}
   m_Father: {fileID: 1095882579}
   m_LocalEulerAnglesHint: {x: 0, y: 90.252, z: 0}
 --- !u!136 &1375403221
@@ -10557,6 +10558,37 @@ Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 78d8a5427b96b43438bd9edf5a330a84, type: 3}
   m_PrefabInstance: {fileID: 285807746}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1669011034
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1669011035}
+  m_Layer: 0
+  m_Name: TutmaNoktasi
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1669011035
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1669011034}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.982, y: 1.388, z: 0.065}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1375403220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1671743413
 GameObject:
   m_ObjectHideFlags: 0
