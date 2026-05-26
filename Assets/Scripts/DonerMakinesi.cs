@@ -1,10 +1,18 @@
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro; // TMPro kütüphanesini ekledik ki yazý metnini deðiþtirebilelim
+using TMPro;
 using System.Collections;
 
 public class DonerMakinesi : MonoBehaviour
 {
+    // --- YENÝ EKLENEN DURUM YÖNETÝMÝ ---
+    public enum DonerDurumu { Cig, Pisti, Yandi }
+
+    [Header("Döner Durumu (Katmanlar)")]
+    public DonerDurumu anlikDurum = DonerDurumu.Cig;
+    public bool zehirliMi = true; // Baþlangýçta çið olduðu için zehirli
+    public int atilanKesikSayisi = 0; // Bu katmanda kaç kere kesik atýldý?
+
     [Header("Makine Durumu")]
     public bool makineAcikMi = false;
     public Animator donerAnimator;
@@ -22,18 +30,17 @@ public class DonerMakinesi : MonoBehaviour
 
     [Header("Etkileþim Ayarlarý")]
     public bool oyuncuYakindaMi = false;
-    public TextMeshProUGUI eTusuYazisi; // GameObject yerine TextMeshProUGUI olarak güncelledik!
+    public TextMeshProUGUI eTusuYazisi;
     private OyuncuEnvanter makineyeYakinOyuncu;
 
     [Header("Piþme Ayarlarý")]
     public MeshRenderer donerEtiRenderer;
-    public Material azPismisMat;
-    public Material pismisMat;
-    public Material cokPismisMat;
+    public Material azPismisMat; // Çið
+    public Material pismisMat;   // Piþmiþ
+    public Material cokPismisMat; // Yanýk
 
     public float pismeSuresi = 0f;
-    public float pismisOlmaSiniri = 10f;
-    public float cokPismisOlmaSiniri = 25f;
+    public float pismesiIcinGerekenSure = 10f; // Akýþ þemasýndaki 10 saniye
 
     [Header("Kesme ve Yükleme Çubuðu")]
     public GameObject arkaplanObjesi;
@@ -47,13 +54,15 @@ public class DonerMakinesi : MonoBehaviour
     public Transform kesimNoktasi;
 
     [Header("Tepsi Baðlantýsý")]
-    public TepsiBirakmaNoktasi tepsiNoktasi; // Kýrmýzý alandaki scripti buraya sürükleyeceðiz
+    public TepsiBirakmaNoktasi tepsiNoktasi;
 
     void Start()
     {
         if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
         if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(false);
+
+        DurumuGuncelle(DonerDurumu.Cig); // Baþlangýç durumunu ayarla
     }
 
     void Update()
@@ -64,24 +73,21 @@ public class DonerMakinesi : MonoBehaviour
             return;
         }
 
-        // 1. DÝNAMÝK YAZI KONTROLÜ (DÜZELTÝLDÝ: Duruma göre yazý metni deðiþiyor)
+        // 1. DÝNAMÝK YAZI KONTROLÜ
         if (oyuncuYakindaMi && !kesimYapiliyorMu)
         {
             if (eTusuYazisi != null)
             {
                 eTusuYazisi.gameObject.SetActive(true);
 
-                // Eðer döner soðuksa öncelik ýsýtma uyarýsý olsun
                 if (donerSogukMu && !makineAcikMi)
                 {
                     eTusuYazisi.text = "Döneri Isýtmak Ýçin E'ye Bas";
                 }
-                // Makine zaten açýk durumdaysa kapatma uyarýsý yazsýn
                 else if (makineAcikMi)
                 {
                     eTusuYazisi.text = "Makineyi Kapatmak Ýçin E'ye Bas";
                 }
-                // Makine kapalý ve döner sýcaksa açma uyarýsý yazsýn
                 else
                 {
                     eTusuYazisi.text = "Makineyi Açmak Ýçin E'ye Bas";
@@ -114,14 +120,19 @@ public class DonerMakinesi : MonoBehaviour
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", true);
             sogumaSayaci = 0f;
 
-            if (pismeSuresi < cokPismisOlmaSiniri)
+            if (anlikDurum != DonerDurumu.Yandi)
             {
                 pismeSuresi += Time.deltaTime;
-            }
 
-            if (pismeSuresi >= cokPismisOlmaSiniri) donerEtiRenderer.material = cokPismisMat;
-            else if (pismeSuresi >= pismisOlmaSiniri) donerEtiRenderer.material = pismisMat;
-            else donerEtiRenderer.material = azPismisMat;
+                if (anlikDurum == DonerDurumu.Cig && pismeSuresi >= pismesiIcinGerekenSure)
+                {
+                    DurumuGuncelle(DonerDurumu.Pisti);
+                }
+                else if (anlikDurum == DonerDurumu.Pisti && pismeSuresi >= pismesiIcinGerekenSure)
+                {
+                    DurumuGuncelle(DonerDurumu.Yandi);
+                }
+            }
         }
         else
         {
@@ -170,6 +181,71 @@ public class DonerMakinesi : MonoBehaviour
         }
     }
 
+    // --- YENÝ: DURUM GÜNCELLEME MERKEZÝ ---
+    private void DurumuGuncelle(DonerDurumu yeniDurum)
+    {
+        anlikDurum = yeniDurum;
+        pismeSuresi = 0f;
+        atilanKesikSayisi = 0;
+
+        switch (anlikDurum)
+        {
+            case DonerDurumu.Cig:
+                zehirliMi = true;
+                if (donerEtiRenderer != null) donerEtiRenderer.material = azPismisMat;
+                break;
+            case DonerDurumu.Pisti:
+                zehirliMi = false;
+                if (donerEtiRenderer != null) donerEtiRenderer.material = pismisMat;
+                break;
+            case DonerDurumu.Yandi:
+                zehirliMi = true;
+                if (donerEtiRenderer != null) donerEtiRenderer.material = cokPismisMat;
+                break;
+        }
+        Debug.Log("Döner durumu deðiþti: " + anlikDurum);
+    }
+
+    void EtKesipDusur()
+    {
+        if (donerDilimPrefab != null && kesimNoktasi != null)
+        {
+            atilanKesikSayisi++;
+            Debug.Log("Et kesildi! Mevcut katmandaki kesik: " + atilanKesikSayisi);
+
+            GameObject yeniDilim = Instantiate(donerDilimPrefab, kesimNoktasi.position, Quaternion.identity);
+
+            MeshRenderer dilimRenderer = yeniDilim.GetComponent<MeshRenderer>();
+            if (dilimRenderer != null && donerEtiRenderer != null)
+            {
+                dilimRenderer.material = donerEtiRenderer.material;
+            }
+
+            DonerDilimi dilimScript = yeniDilim.GetComponent<DonerDilimi>();
+            if (dilimScript != null)
+            {
+                dilimScript.sogukMu = this.donerSogukMu;
+                dilimScript.zehirliMi = this.zehirliMi;
+            }
+
+            // 10 KESÝK KONTROLÜ
+            if (atilanKesikSayisi >= 10)
+            {
+                if (anlikDurum == DonerDurumu.Yandi) DurumuGuncelle(DonerDurumu.Pisti);
+                else if (anlikDurum == DonerDurumu.Pisti) DurumuGuncelle(DonerDurumu.Cig);
+            }
+
+            if (tepsiNoktasi != null && tepsiNoktasi.ustundekiTepsi != null)
+            {
+                StartCoroutine(TepsiyeDusmeAnimasyonu(yeniDilim, tepsiNoktasi.ustundekiTepsi));
+            }
+            else
+            {
+                Debug.LogWarning("Ocaðýn yanýna tepsi koymadýðýn için et tezgaha düþtü!");
+            }
+        }
+    }
+
     void DöneriIsit()
     {
         isinmaIlerlemesi += Time.deltaTime * 0.5f;
@@ -198,44 +274,9 @@ public class DonerMakinesi : MonoBehaviour
             makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", false);
         }
     }
-    void EtKesipDusur()
-    {
-        if (donerDilimPrefab != null && kesimNoktasi != null)
-        {
-            // 1. Eti havada, kesim noktasýnda fiziksel 3D model olarak yarat
-            GameObject yeniDilim = Instantiate(donerDilimPrefab, kesimNoktasi.position, Quaternion.identity);
 
-            // 2. Piþmiþlik rengini yeni düþen ete aktar
-            MeshRenderer dilimRenderer = yeniDilim.GetComponent<MeshRenderer>();
-            if (dilimRenderer != null && donerEtiRenderer != null)
-            {
-                dilimRenderer.material = donerEtiRenderer.material;
-            }
-
-            DonerDilimi dilimScript = yeniDilim.GetComponent<DonerDilimi>();
-            if (dilimScript != null)
-            {
-                dilimScript.sogukMu = this.donerSogukMu;
-            }
-
-            // 3. Kýrmýzý alanda tepsi var mý kontrol et
-            if (tepsiNoktasi != null && tepsiNoktasi.ustundekiTepsi != null)
-            {
-                // Tepsi varsa animasyonlu düþüþ sürecini baþlat
-                StartCoroutine(TepsiyeDusmeAnimasyonu(yeniDilim, tepsiNoktasi.ustundekiTepsi));
-            }
-            else
-            {
-                // Tepsi yoksa et serbest düþüþle (fizikle) tezgaha/yere düþer
-                Debug.LogWarning("Ocaðýn yanýna tepsi koymadýðýn için et tezgaha düþtü!");
-            }
-        }
-    }
-
-    // Zaman ayarlý düþme animasyon sistemi
     IEnumerator TepsiyeDusmeAnimasyonu(GameObject dilim, Tray hedefTepsi)
     {
-        // Etin saða sola sekmesini engellemek için fiziksel çarpýþmasýný geçici kapatýyoruz
         Rigidbody rb = dilim.GetComponent<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
 
@@ -246,7 +287,6 @@ public class DonerMakinesi : MonoBehaviour
         float animasyonSuresi = 0.35f;
         Vector3 baslangicPozisyonu = dilim.transform.position;
 
-        // Etin, tepsinin merkezine deðil doðrudan "Et Noktasýna" gitmesini saðlýyoruz
         Vector3 hedefPozisyon = hedefTepsi.etlerinBirikecegiNokta != null
             ? hedefTepsi.etlerinBirikecegiNokta.position
             : hedefTepsi.transform.position;
@@ -259,9 +299,6 @@ public class DonerMakinesi : MonoBehaviour
             yield return null;
         }
 
-        // ESKÝ HATA BURADAYDI: Sadece sayacý artýrýp eti "Destroy" yapýyorduk.
-        // YENÝ SÝSTEM: Uçuþ animasyonu bitince o sahte animasyon etini siliyoruz ve 
-        // Tray.cs içindeki, eti rastgele açýlarla üst üste dizen fiziksel EtEkle() sistemini tetikliyoruz.
         Destroy(dilim);
 
         hedefTepsi.EtEkle();

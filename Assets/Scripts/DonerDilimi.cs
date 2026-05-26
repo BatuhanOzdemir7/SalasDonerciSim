@@ -4,6 +4,9 @@ public class DonerDilimi : MonoBehaviour, IInteractable
 {
     public bool sogukMu = false;
 
+    // ÝÞTE EKSÝK OLAN VE HATAYA SEBEP OLAN SATIR BURASI:
+    public bool zehirliMi = false;
+
     public void Interact(OyuncuEnvanter oyuncu)
     {
         Tray eldeTutulanTepsi = oyuncu.GetHeldTray();
@@ -15,9 +18,14 @@ public class DonerDilimi : MonoBehaviour, IInteractable
             {
                 eldeTutulanTepsi.tepsidekiEtSayisi++;
                 eldeTutulanTepsi.isMeatCold = this.sogukMu;
+
+                // NOT: Ýleride Tray kodunuza "isMeatPoisonous" tarzý bir deðiþken eklerseniz, 
+                // bu dilimdeki zehir bilgisini o tepsiye þöyle aktarabilirsiniz:
+                // eldeTutulanTepsi.isMeatPoisonous = this.zehirliMi; 
+
                 eldeTutulanTepsi.GorselleriGuncelle();
 
-                Debug.Log("Et tepsiye alýndý. Toplam Et: " + eldeTutulanTepsi.tepsidekiEtSayisi);
+                Debug.Log("Et tepsiye alýndý. Zehirli mi?: " + zehirliMi);
                 Destroy(this.gameObject);
             }
             else
