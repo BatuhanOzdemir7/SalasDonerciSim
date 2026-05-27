@@ -21,6 +21,7 @@ public class Buzdolabi : MonoBehaviour, IInteractable
     public GameObject soganPrefab;
     public GameObject lavasPrefab;
     public GameObject cigTavukPrefab;
+    public GameObject cigPatatesPrefab;
 
     void Start()
     {
@@ -69,7 +70,6 @@ public class Buzdolabi : MonoBehaviour, IInteractable
 
     IEnumerator KapakDondur(float hedefAci)
     {
-        // HATALI SATIR BURASIYDI. Düzeltildi ve eksi açýlarý da algýlamasý saðlandý.
         kapakAcikMi = Mathf.Abs(hedefAci) > 0.1f;
 
         Quaternion baslangicRot = dolapKapagi.localRotation;
@@ -92,6 +92,7 @@ public class Buzdolabi : MonoBehaviour, IInteractable
     public void Buton_SoganAl() { MalzemeVer(soganPrefab); }
     public void Buton_LavasAl() { MalzemeVer(lavasPrefab); }
     public void Buton_CigTavukAl() { MalzemeVer(cigTavukPrefab); }
+    public void Buton_PatatesAl() { MalzemeVer(cigPatatesPrefab); }
 
     public void Buton_MenuyuKapat()
     {
@@ -110,6 +111,13 @@ public class Buzdolabi : MonoBehaviour, IInteractable
         if (islemYapanOyuncu != null && secilenPrefab != null)
         {
             GameObject yeniMalzeme = Instantiate(secilenPrefab);
+
+            // Eðer isminde Clone yazýsý kalýrsa Fritoz kodu algýlayamaz, bu yüzden ismini sabitliyoruz
+            if (secilenPrefab == cigPatatesPrefab)
+            {
+                yeniMalzeme.name = "CigPatates";
+            }
+
             islemYapanOyuncu.PickUpItem(yeniMalzeme);
             Buton_MenuyuKapat();
         }
