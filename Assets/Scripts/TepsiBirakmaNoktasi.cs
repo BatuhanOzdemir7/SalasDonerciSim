@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // TextMeshPro kütüphanesini ekledik
+using TMPro;
 
 public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
 {
@@ -8,7 +8,7 @@ public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
     public Tray ustundekiTepsi;
 
     [Header("Arayüz Ayarlarý")]
-    public TextMeshPro etSayaciYazisi; // Havada asýlý duracak 3D yazý bileþeni
+    public TextMeshPro etSayaciYazisi;
 
     void Start()
     {
@@ -30,29 +30,40 @@ public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
                 ustundekiTepsi.transform.rotation = tepsininDuracagiYer.rotation;
                 ustundekiTepsi.transform.localScale = ustundekiTepsi.orijinalBoyut;
 
+                Collider col = ustundekiTepsi.GetComponent<Collider>();
+                if (col == null) col = ustundekiTepsi.GetComponentInChildren<Collider>();
+                if (col != null) col.enabled = true;
+
                 oyuncu.EldenBirak();
-                SayaciGuncelle(); // Tepsi konunca sayacý tazeledik
-                Debug.Log("Tepsi masaya býrakýldý.");
+                SayaciGuncelle();
             }
         }
         else
         {
-            if (oyuncu.GetHeldTray() == null && !oyuncu.bicakVarMi)
+            Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
+            bool qTusunaBasildiMi = Input.GetKey(KeyCode.Q) || Input.GetKeyDown(KeyCode.Q);
+
+            // KÖPRÜ: Lazer masaya çarpsa bile dürüm sarma/malzeme koyma iþlemini tepsiye yönlendir
+            if (qTusunaBasildiMi || eldekiMalzeme != null)
+            {
+                ustundekiTepsi.Interact(oyuncu);
+                SayaciGuncelle();
+                return;
+            }
+
+            if (oyuncu.GetHeldTray() == null && !oyuncu.bicakVarMi && eldekiMalzeme == null)
             {
                 oyuncu.PickUpItem(ustundekiTepsi.gameObject);
                 ustundekiTepsi = null;
-                SayaciGuncelle(); // Tepsi alýnýnca sayacý gizledik
-                Debug.Log("Tepsi masadan geri alýndý.");
+                SayaciGuncelle();
             }
         }
     }
 
-    // Döner makinesi et kestikçe veya tepsi deðiþtikçe bu fonksiyon çaðrýlacak
     public void SayaciGuncelle()
     {
         if (etSayaciYazisi == null) return;
 
-        // Eðer masada tepsi varsa ve henüz dürüme dönüþmediyse sayýyý göster
         if (ustundekiTepsi != null && !ustundekiTepsi.isDurum)
         {
             etSayaciYazisi.gameObject.SetActive(true);
@@ -60,7 +71,6 @@ public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
         }
         else
         {
-            // Masada tepsi yoksa yazýyý tamamen gizle
             etSayaciYazisi.gameObject.SetActive(false);
         }
     }

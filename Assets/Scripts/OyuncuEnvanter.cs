@@ -19,7 +19,7 @@ public class OyuncuEnvanter : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Q))
         {
             EtkilesimiKontrolEt();
         }

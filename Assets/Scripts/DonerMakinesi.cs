@@ -304,6 +304,12 @@ public class DonerMakinesi : MonoBehaviour
         hedefTepsi.EtEkle();
         hedefTepsi.isMeatCold = this.donerSogukMu;
 
+        // EÐER MAKÝNEDEKÝ ET ZEHÝRLÝYSE (Çið veya Yanýk), TEPSÝYÝ DE ZEHÝRLE
+        if (this.zehirliMi)
+        {
+            hedefTepsi.zehirliEtVarMi = true;
+        }
+
         if (tepsiNoktasi != null)
         {
             tepsiNoktasi.SayaciGuncelle();
