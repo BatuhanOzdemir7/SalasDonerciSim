@@ -8,6 +8,7 @@ public class Durum : MonoBehaviour
     public bool soganVarMi = false;
     public bool marulVarMi = false;
     public bool tursuVarMi = false;
+    public bool patatesVarMi = false;
 
     [Header("Sağlık Durumu")]
     public bool donerZehirliMi = false;

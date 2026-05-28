@@ -16,16 +16,15 @@ public class Tray : MonoBehaviour, IInteractable
     public bool soganVarMi = false;
     public bool marulVarMi = false;
     public bool tursuVarMi = false;
+    public bool patatesVarMi = false;
 
     [Header("Transform Verileri")]
     public Vector3 orijinalBoyut;
 
     [Header("3D Görseller")]
-    // Tepsideki o ham, voxel etlerin olduðu grup.
     public GameObject etGorselleriGrubu;
-    // Tepsinin hiyerarþisinde duran, sarýlmýþ dürüm modeli.
     public GameObject durumGorseli;
-    // Tepsinin üzerinde yüzen "et sayacý" (TextMeshPro).
+    public GameObject patatesGorseli;
     public TMP_Text etSayaciYazisi;
 
     [Header("Yeni Fiziksel Et Yýðýný (Fritözden Düþenler Ýçin)")]
@@ -41,7 +40,7 @@ public class Tray : MonoBehaviour, IInteractable
         {
             orijinalBoyut = transform.localScale;
         }
-        GorselleriGuncelle(); // Baþlangýçta görselleri doðru ayarla
+        GorselleriGuncelle();
     }
 
     public void Interact(OyuncuEnvanter oyuncu)
@@ -49,34 +48,28 @@ public class Tray : MonoBehaviour, IInteractable
         Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
         bool qTusunaBasildiMi = Input.GetKey(KeyCode.Q) || Input.GetKeyDown(KeyCode.Q);
 
-        // Q Tuþu: Lavaþ ile Dürüm Sarma Ýþlemi
+        // Q Tuþu Ýþlemleri: Lavaþ, Patates ve Tüm Yeþillik/Malzemeler
         if (qTusunaBasildiMi)
         {
             if (eldekiMalzeme != null)
             {
-                // Ýsimlendirme sorununu kökten çözüyoruz (büyük/küçük harf baðýmsýz)
                 string objeAdi = eldekiMalzeme.name.ToLower();
 
+                // 1. LAVAÞ KONTROLÜ
                 if (objeAdi.Contains("lavas") || objeAdi.Contains("lavaþ"))
                 {
                     if (tepsidekiEtSayisi > 0 && !isDurum)
                     {
-                        oyuncu.EldenBirakVeSil(); // Lavaþ silindi
-
-                        // YENÝ SÝSYSTEM: Tepsiyi dürüme dönüþtürüyoruz
+                        oyuncu.EldenBirakVeSil();
                         isDurum = true;
 
-                        // Altýndaki ham et görsellerini siliyoruz
                         foreach (GameObject et in birikenEtGorselleri)
                         {
                             Destroy(et);
                         }
                         birikenEtGorselleri.Clear();
 
-                        // !!! Verileri SIFIRLAMIYORUZ! Tepsi zehir bilgisini, malzeme bilgisini koruyor. !!!
-
-                        GorselleriGuncelle(); // Dürüm görselini açar, sayacý gizler
-
+                        GorselleriGuncelle();
                         Debug.Log("<color=green>BAÞARILI: Lavaþ eklendi, tepsideki etler dürüme dönüþtü!</color>");
                     }
                     else if (isDurum)
@@ -88,26 +81,77 @@ public class Tray : MonoBehaviour, IInteractable
                         Debug.LogWarning("UYARI: Tepside et olmadýðý için dürüm sarýlamaz!");
                     }
                 }
+                // 2. PATATES KIZARTMASI KONTROLÜ
+                else if (objeAdi.Contains("patates") || objeAdi.Contains("frenchfries") || objeAdi.Contains("fries"))
+                {
+                    if (objeAdi.Contains("cig") || objeAdi.Contains("çið") || objeAdi.Contains("yanik") || objeAdi.Contains("yanýk"))
+                    {
+                        Debug.LogWarning("UYARI: Çið veya yanýk patatesi tepsiye ekleyemezsin!");
+                    }
+                    else
+                    {
+                        if (!patatesVarMi)
+                        {
+                            patatesVarMi = true;
+                            oyuncu.EldenBirakVeSil();
+                            GorselleriGuncelle();
+                            Debug.Log("<color=green>BAÞARILI: Tepsiye Q tuþu ile patates kýzartmasý eklendi.</color>");
+                        }
+                        else
+                        {
+                            Debug.LogWarning("Tepside zaten patates var!");
+                        }
+                    }
+                }
+                // 3. SOÐAN KONTROLÜ
+                else if (objeAdi.Contains("sogan") || objeAdi.Contains("soðan") || objeAdi.Contains("onion"))
+                {
+                    if (!soganVarMi)
+                    {
+                        soganVarMi = true;
+                        oyuncu.EldenBirakVeSil();
+                        Debug.Log("<color=green>BAÞARILI: Dürüme/Tepsiye Q tuþu ile soðan eklendi.</color>");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Tepside zaten soðan var!");
+                    }
+                }
+                // 4. MARUL KONTROLÜ
+                else if (objeAdi.Contains("marul") || objeAdi.Contains("lettuce"))
+                {
+                    if (!marulVarMi)
+                    {
+                        marulVarMi = true;
+                        oyuncu.EldenBirakVeSil();
+                        Debug.Log("<color=green>BAÞARILI: Dürüme/Tepsiye Q tuþu ile marul eklendi.</color>");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Tepside zaten marul var!");
+                    }
+                }
+                // 5. TURÞU KONTROLÜ
+                else if (objeAdi.Contains("tursu") || objeAdi.Contains("turþu") || objeAdi.Contains("cucumber") || objeAdi.Contains("pickle"))
+                {
+                    if (!tursuVarMi)
+                    {
+                        tursuVarMi = true;
+                        oyuncu.EldenBirakVeSil();
+                        Debug.Log("<color=green>BAÞARILI: Dürüme/Tepsiye Q tuþu ile turþu eklendi.</color>");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("Tepside zaten turþu var!");
+                    }
+                }
+                // 6. ÝSÝM UYUÞMAZLIÐI YAKALAYICI
+                else
+                {
+                    Debug.LogWarning("UYARI: Q'ya bastýn ama elindeki obje Lavaþ, Patates veya Malzeme olarak tanýnmadý! Objenin Unity'deki tam adý: " + eldekiMalzeme.name);
+                }
             }
             return;
-        }
-
-        // F Tuþu: Tepsiye Malzeme Ekleme Ýþlemi (Dürüm sarýlmadan önce yapýlabilir)
-        if (eldekiMalzeme != null && !isDurum)
-        {
-            string objeAdi = eldekiMalzeme.name.ToLower();
-            if (objeAdi.Contains("marul"))
-            {
-                marulVarMi = true;
-                oyuncu.EldenBirakVeSil();
-                Debug.Log("Tepsiye marul eklendi.");
-            }
-            else if (objeAdi.Contains("sogan") || objeAdi.Contains("soðan"))
-            {
-                soganVarMi = true;
-                oyuncu.EldenBirakVeSil();
-                Debug.Log("Tepsiye soðan eklendi.");
-            }
         }
     }
 
@@ -118,42 +162,25 @@ public class Tray : MonoBehaviour, IInteractable
 
     public void GorselleriGuncelle()
     {
-        // 1. Sayacýn Durumu
         if (etSayaciYazisi != null)
         {
-            if (isDurum)
-            {
-                etSayaciYazisi.gameObject.SetActive(false); // Dürümse sayacý gizle
-            }
+            if (isDurum) etSayaciYazisi.gameObject.SetActive(false);
             else if (tepsidekiEtSayisi > 0)
             {
                 etSayaciYazisi.gameObject.SetActive(true);
                 etSayaciYazisi.text = tepsidekiEtSayisi.ToString();
             }
-            else
-            {
-                etSayaciYazisi.gameObject.SetActive(false);
-            }
+            else etSayaciYazisi.gameObject.SetActive(false);
         }
 
-        // 2. Dürüm Görselinin Durumu
-        if (durumGorseli != null)
-        {
-            // Dürüm görselini sadece dürüme dönüþtüðünde aktif ediyoruz
-            durumGorseli.SetActive(isDurum);
-        }
+        if (durumGorseli != null) durumGorseli.SetActive(isDurum);
+        if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(!isDurum);
 
-        // 3. Ham Et Görsellerinin Durumu
-        if (etGorselleriGrubu != null)
-        {
-            // Dürüm sarýldýysa eski et görsellerini gizle
-            etGorselleriGrubu.SetActive(!isDurum);
-        }
+        if (patatesGorseli != null) patatesGorseli.SetActive(patatesVarMi);
     }
 
     public void EtEkle()
     {
-        // Tepside dürüm varsa üzerine daha fazla açýk et atýlamaz
         if (isDurum) return;
 
         tepsidekiEtSayisi++;
@@ -185,6 +212,7 @@ public class Tray : MonoBehaviour, IInteractable
         soganVarMi = false;
         marulVarMi = false;
         tursuVarMi = false;
+        patatesVarMi = false;
 
         foreach (GameObject et in birikenEtGorselleri)
         {
