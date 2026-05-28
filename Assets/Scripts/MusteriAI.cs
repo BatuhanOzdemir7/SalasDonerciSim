@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.UI; // Image bileþenini kontrol etmek için bu þart!
 public class MusteriAI : MonoBehaviour
 {
     public enum MusteriDurumu { MasayaGidiyor, SiparisBekliyor, YemekYiyor, KasayaGidiyor, KasadaBekliyor, Ayriliyor }
@@ -17,6 +17,18 @@ public class MusteriAI : MonoBehaviour
     public Transform hedefSandalye;
     public Transform cikisNoktasi;
 
+    [Header("UI ve Etkileþim")]
+    [Header("Sipariþ UI ve Menü")]
+    public Image yemekIkonu; // Dönerin çýkacaðý çerçeve
+    public Image icecekIkonu; // Ýçeceðin çýkacaðý çerçeve
+
+    public Sprite donerResmi; // Fix menü: Sabit döner resmimiz
+    public Sprite[] icecekResimleri; // Rastgele seçilecek içecekler (Kola, Ayran, Þalgam)
+    public GameObject siparisCanvas; // Kafasýndaki baloncuk
+    public float etkilesimMesafesi = 3f; // E'ye basabilmek için gereken mesafe
+    private Transform oyuncu;
+    private bool siparisAlindiMi = false;
+
     private NavMeshAgent agent;
     private Animator musteriAnimator;
     private bool hedefeUlasildiMi = false;
@@ -29,19 +41,23 @@ public class MusteriAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         musteriAnimator = GetComponent<Animator>();
 
-        // GÜVENLÝK: Inspector'da yanlýþlýkla 0 yapýldýysa oyunu bozmamasý için zorla düzeltiyoruz
+        // Oyuncuyu Tag (Player) sayesinde otomatik bulur
+        GameObject oyuncuObje = GameObject.FindGameObjectWithTag("Player");
+        if (oyuncuObje != null) oyuncu = oyuncuObje.transform;
+
         if (sabirSuresi <= 0) sabirSuresi = 20f;
         if (yemekYemeSuresi <= 0) yemekYemeSuresi = 5f;
 
         sabirSayaci = sabirSuresi;
         yemekSayaci = yemekYemeSuresi;
 
+        if (siparisCanvas != null) siparisCanvas.SetActive(false);
+
         DurumDegistir(MusteriDurumu.MasayaGidiyor);
     }
 
     void Update()
     {
-        // 1. KUSURSUZ HEDEF KONTROLÜ (Unity Bug'ýný Engelleyen Kýsým)
         if (agent != null && agent.enabled && !agent.pathPending)
         {
             if (agent.remainingDistance <= agent.stoppingDistance)
@@ -50,11 +66,10 @@ public class MusteriAI : MonoBehaviour
                 {
                     if (!hedefeUlasildiMi)
                     {
-                        // EKSTRA GÜVENLÝK: Eðer masaya gidiyorsa, sandalyeye gerçekten fiziksel olarak yaklaþtý mý?
                         if (suAnkiDurum == MusteriDurumu.MasayaGidiyor && hedefSandalye != null)
                         {
                             float gercekMesafe = Vector3.Distance(transform.position, hedefSandalye.position);
-                            if (gercekMesafe > 2.5f) return; // 2.5 metreden uzaktaysa hedefe vardým sanýp masayý iptal etme!
+                            if (gercekMesafe > 2.5f) return;
                         }
 
                         hedefeUlasildiMi = true;
@@ -64,7 +79,6 @@ public class MusteriAI : MonoBehaviour
             }
         }
 
-        // 2. MASADA OTURMA (Pürüzsüz Hizalama)
         if (suAnkiDurum == MusteriDurumu.SiparisBekliyor || suAnkiDurum == MusteriDurumu.YemekYiyor)
         {
             if (hedefSandalye != null)
@@ -74,11 +88,24 @@ public class MusteriAI : MonoBehaviour
             }
         }
 
-        // 3. ANÝMASYON HIZI
         if (musteriAnimator != null)
         {
             float anlikHiz = (agent != null && agent.enabled) ? agent.velocity.magnitude : 0f;
             musteriAnimator.SetFloat("Speed", anlikHiz);
+        }
+
+        // ==========================================
+        // YENÝ: E TUÞU ÝLE SÝPARÝÞ ALMA (BALONCUÐU KAPATIP FÝÞ BASMA)
+        // ==========================================
+        if (suAnkiDurum == MusteriDurumu.SiparisBekliyor && !siparisAlindiMi)
+        {
+            if (oyuncu != null && Vector3.Distance(transform.position, oyuncu.position) <= etkilesimMesafesi)
+            {
+                if (Input.GetKeyDown(KeyCode.E))
+                {
+                    SiparisiOyuncuyaVer();
+                }
+            }
         }
 
         StatusKontrol();
@@ -92,7 +119,6 @@ public class MusteriAI : MonoBehaviour
                 sabirSayaci -= Time.deltaTime;
                 if (sabirSayaci <= 0)
                 {
-                    Debug.Log(gameObject.name + ": Usta açlýktan öldük, ben kaçar!");
                     DurumDegistir(MusteriDurumu.Ayriliyor);
                 }
                 break;
@@ -107,6 +133,18 @@ public class MusteriAI : MonoBehaviour
         }
     }
 
+    void SiparisiOyuncuyaVer()
+    {
+        siparisAlindiMi = true;
+        sabirSayaci = sabirSuresi; // Sipariþ alýndý, sabýr süresi sýfýrlandý (yemek bekleme süresi baþladý)
+
+        // 1. Kafasýndaki baloncuðu gizle
+        if (siparisCanvas != null) siparisCanvas.SetActive(false);
+
+        // 2. Sað üstte fiþ oluþtur (FisYonetici üzerinden)
+        if (FisYonetici.Instance != null) FisYonetici.Instance.YeniFisOlustur(gameObject.name);
+    }
+
     void HedefeUlasincaTetikle()
     {
         switch (suAnkiDurum)
@@ -114,11 +152,9 @@ public class MusteriAI : MonoBehaviour
             case MusteriDurumu.MasayaGidiyor:
                 DurumDegistir(MusteriDurumu.SiparisBekliyor);
                 break;
-
             case MusteriDurumu.KasayaGidiyor:
                 DurumDegistir(MusteriDurumu.KasadaBekliyor);
                 break;
-
             case MusteriDurumu.Ayriliyor:
                 Destroy(gameObject);
                 break;
@@ -133,23 +169,40 @@ public class MusteriAI : MonoBehaviour
         {
             case MusteriDurumu.MasayaGidiyor:
                 hedefeUlasildiMi = false;
-                if (agent != null)
-                {
-                    agent.enabled = true;
-                    if (hedefSandalye != null) agent.SetDestination(hedefSandalye.position);
-                }
+                if (agent != null) { agent.enabled = true; if (hedefSandalye != null) agent.SetDestination(hedefSandalye.position); }
                 break;
 
             case MusteriDurumu.SiparisBekliyor:
+                // YAPAY ZEKAYI DURDUR
                 if (agent != null) agent.enabled = false;
+
+                // --- YENÝ KOD: KOMBOLU SÝPARÝÞ SÝSTEMÝ ---
+                // 1. Herkes döner yiyecek (Zorunlu)
+                if (yemekIkonu != null && donerResmi != null)
+                {
+                    yemekIkonu.sprite = donerResmi;
+                }
+
+                // 2. Yanýna rastgele bir içecek seçecek
+                if (icecekResimleri.Length > 0 && icecekIkonu != null)
+                {
+                    int rastgeleIcecek = Random.Range(0, icecekResimleri.Length);
+                    icecekIkonu.sprite = icecekResimleri[rastgeleIcecek];
+                }
+
+                // Baloncuðu ve animasyonu aç
+                if (siparisCanvas != null) siparisCanvas.SetActive(true);
+                if (musteriAnimator != null) musteriAnimator.SetBool("Oturuyor", true);
                 break;
 
             case MusteriDurumu.YemekYiyor:
+                if (siparisCanvas != null) siparisCanvas.SetActive(false);
                 break;
 
             case MusteriDurumu.KasayaGidiyor:
                 hedefeUlasildiMi = false;
                 if (agent != null) agent.enabled = true;
+                if (musteriAnimator != null) musteriAnimator.SetBool("Oturuyor", false);
                 if (KasaYonetici.Instance != null) KasaYonetici.Instance.KuyrugaGir(this);
                 break;
 
@@ -157,8 +210,10 @@ public class MusteriAI : MonoBehaviour
                 break;
 
             case MusteriDurumu.Ayriliyor:
+                if (siparisCanvas != null) siparisCanvas.SetActive(false);
                 hedefeUlasildiMi = false;
                 if (agent != null) agent.enabled = true;
+                if (musteriAnimator != null) musteriAnimator.SetBool("Oturuyor", false);
                 if (cikisNoktasi != null) agent.SetDestination(cikisNoktasi.position);
                 break;
         }
@@ -166,11 +221,15 @@ public class MusteriAI : MonoBehaviour
 
     public void SiparisTeslimEdildi()
     {
-        if (suAnkiDurum == MusteriDurumu.SiparisBekliyor)
+        // Yemeði cidden verdiðimizde çaðýracaðýmýz yer
+        if (suAnkiDurum == MusteriDurumu.SiparisBekliyor && siparisAlindiMi)
         {
             DurumDegistir(MusteriDurumu.YemekYiyor);
         }
     }
+    // ==========================================
+    // KASA YÖNETÝCÝSÝ ÝÇÝN GEREKLÝ FONKSÝYONLAR
+    // ==========================================
 
     public void OdemeYapVeGit()
     {
@@ -181,7 +240,9 @@ public class MusteriAI : MonoBehaviour
     {
         if (agent != null)
         {
+            // Eðer müþteri masada oturduðu için yapay zekasý kapanmýþsa, yürüyebilmesi için geri açýyoruz
             if (!agent.enabled) agent.enabled = true;
+
             agent.SetDestination(yeniPozisyon);
         }
     }
