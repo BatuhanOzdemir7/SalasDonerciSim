@@ -21,6 +21,7 @@ public class DonerMakinesi : MonoBehaviour
     [Header("Makine Durumu")]
     public bool makineAcikMi = false;
     public Animator donerAnimator;
+    public TextMeshProUGUI makineDurumText;
 
     [Header("Sýcaklýk ve Soðuma Ayarlarý")]
     public bool donerSogukMu = false;
@@ -46,6 +47,7 @@ public class DonerMakinesi : MonoBehaviour
 
     public float pismeSuresi = 0f;
     public float pismesiIcinGerekenSure = 10f;
+    public float yanmasiIcinGerekenSure = 30f; // BATUHAN'IN YENÝ YANMA SÜRESÝ
 
     [Header("Kesme ve Yükleme Çubuðu")]
     public GameObject arkaplanObjesi;
@@ -72,6 +74,7 @@ public class DonerMakinesi : MonoBehaviour
 
     void Update()
     {
+        // 1. YAPRAK SAYACI GÜNCELLEMESÝ
         if (kalanYaprakText != null)
         {
             if (kalanYaprakSayisi > 0)
@@ -80,28 +83,33 @@ public class DonerMakinesi : MonoBehaviour
                 kalanYaprakText.text = "DÖNER BÝTTÝ!";
         }
 
+        // MAKÝNE DURUMU GÜNCELLEMESÝ (Açýk/Kapalý ve Renkli)
+        if (makineDurumText != null)
+        {
+            if (makineAcikMi)
+            {
+                makineDurumText.text = "<color=green>MAKÝNE AÇIK</color>";
+            }
+            else
+            {
+                makineDurumText.text = "<color=red>MAKÝNE KAPALI</color>";
+            }
+        }
+
         if (isiniyorMu)
         {
             DöneriIsit();
             return;
         }
 
-        // --- GÜÇLENDÝRÝLMÝÞ TAVUK DETEKTÝF SÝSTEMÝ ---
+        // TAVUK DETEKTÝF SÝSTEMÝ
         bool elindeTavukVarMi = false;
-
         if (oyuncuYakindaMi && makineyeYakinOyuncu != null)
         {
             var eldekiObje = makineyeYakinOyuncu.GetHeldMalzeme();
-
             if (eldekiObje != null)
             {
-                // Nesnenin adýný alýyoruz (Küçük harfe çevirerek)
                 string nesneAdi = eldekiObje.name.ToLower();
-
-                // CONSOLE'A YAZDIRMA: Fatih elinde tam olarak ne tutuyor?
-                Debug.Log($"[OCAK DEDEKTÝFÝ] Þu an elinde tuttuðun nesnenin tam adý: '{eldekiObje.name}'");
-
-                // Ýsminin içinde tavuk, cig, doner veya et geçen her þeyi kabul edecek þekilde esnetiyoruz
                 if (nesneAdi.Contains("tavuk") || nesneAdi.Contains("cig") || nesneAdi.Contains("chicken") || nesneAdi.Contains("doner"))
                 {
                     elindeTavukVarMi = true;
@@ -109,7 +117,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // 1. DÝNAMÝK YAZI KONTROLÜ
+        // DÝNAMÝK YAZI KONTROLÜ
         if (oyuncuYakindaMi && !kesimYapiliyorMu)
         {
             if (eTusuYazisi != null)
@@ -131,7 +139,7 @@ public class DonerMakinesi : MonoBehaviour
             if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         }
 
-        // 2. E TUÞU KONTROLÜ
+        // E TUÞU KONTROLÜ
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
             if (elindeTavukVarMi)
@@ -186,7 +194,8 @@ public class DonerMakinesi : MonoBehaviour
                 {
                     DurumuGuncelle(DonerDurumu.Pisti);
                 }
-                else if (anlikDurum == DonerDurumu.Pisti && pismeSuresi >= pismesiIcinGerekenSure)
+                // BATUHAN'IN YANMA MEKANÝÐÝ: Artýk yanma süresi ayrý bir deðiþkenden kontrol ediliyor (30s)
+                else if (anlikDurum == DonerDurumu.Pisti && pismeSuresi >= yanmasiIcinGerekenSure)
                 {
                     DurumuGuncelle(DonerDurumu.Yandi);
                 }
@@ -203,7 +212,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // 4. Q TUÞU
+        // Q TUÞU
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.Q))
         {
             if (kalanYaprakSayisi > 0 && makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
@@ -217,7 +226,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // 5. OTOMATÝK KESÝM
+        // OTOMATÝK KESÝM
         if (kesimYapiliyorMu)
         {
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(true);
@@ -268,6 +277,12 @@ public class DonerMakinesi : MonoBehaviour
         {
             atilanKesikSayisi++;
             kalanYaprakSayisi--;
+
+            // BATUHAN'IN MEKANÝÐÝ: Eðer döner piþmiþ durumdaysa ve kesik atýldýysa, yanma süresini sýfýrla!
+            if (anlikDurum == DonerDurumu.Pisti)
+            {
+                pismeSuresi = 0f;
+            }
 
             GameObject yeniDilim = Instantiate(donerDilimPrefab, kesimNoktasi.position, Quaternion.identity);
 
