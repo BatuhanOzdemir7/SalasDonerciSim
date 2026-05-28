@@ -5,13 +5,18 @@ using System.Collections;
 
 public class DonerMakinesi : MonoBehaviour
 {
-    // --- YENÝ EKLENEN DURUM YÖNETÝMÝ ---
     public enum DonerDurumu { Cig, Pisti, Yandi }
 
     [Header("Döner Durumu (Katmanlar)")]
     public DonerDurumu anlikDurum = DonerDurumu.Cig;
-    public bool zehirliMi = true; // Baþlangýçta çið olduðu için zehirli
-    public int atilanKesikSayisi = 0; // Bu katmanda kaç kere kesik atýldý?
+    public bool zehirliMi = true;
+    public int atilanKesikSayisi = 0;
+
+    [Header("Döner Kapasitesi")]
+    public int maxYaprakSayisi = 100;
+    public int kalanYaprakSayisi = 100;
+    public bool donereCigTavukEklendiMi = false;
+    public TextMeshProUGUI kalanYaprakText;
 
     [Header("Makine Durumu")]
     public bool makineAcikMi = false;
@@ -35,12 +40,12 @@ public class DonerMakinesi : MonoBehaviour
 
     [Header("Piþme Ayarlarý")]
     public MeshRenderer donerEtiRenderer;
-    public Material azPismisMat; // Çið
-    public Material pismisMat;   // Piþmiþ
-    public Material cokPismisMat; // Yanýk
+    public Material azPismisMat;
+    public Material pismisMat;
+    public Material cokPismisMat;
 
     public float pismeSuresi = 0f;
-    public float pismesiIcinGerekenSure = 10f; // Akýþ þemasýndaki 10 saniye
+    public float pismesiIcinGerekenSure = 10f;
 
     [Header("Kesme ve Yükleme Çubuðu")]
     public GameObject arkaplanObjesi;
@@ -62,15 +67,46 @@ public class DonerMakinesi : MonoBehaviour
         if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(false);
 
-        DurumuGuncelle(DonerDurumu.Cig); // Baþlangýç durumunu ayarla
+        DurumuGuncelle(DonerDurumu.Cig);
     }
 
     void Update()
     {
+        if (kalanYaprakText != null)
+        {
+            if (kalanYaprakSayisi > 0)
+                kalanYaprakText.text = kalanYaprakSayisi + " / " + maxYaprakSayisi;
+            else
+                kalanYaprakText.text = "DÖNER BÝTTÝ!";
+        }
+
         if (isiniyorMu)
         {
             DöneriIsit();
             return;
+        }
+
+        // --- GÜÇLENDÝRÝLMÝÞ TAVUK DETEKTÝF SÝSTEMÝ ---
+        bool elindeTavukVarMi = false;
+
+        if (oyuncuYakindaMi && makineyeYakinOyuncu != null)
+        {
+            var eldekiObje = makineyeYakinOyuncu.GetHeldMalzeme();
+
+            if (eldekiObje != null)
+            {
+                // Nesnenin adýný alýyoruz (Küçük harfe çevirerek)
+                string nesneAdi = eldekiObje.name.ToLower();
+
+                // CONSOLE'A YAZDIRMA: Fatih elinde tam olarak ne tutuyor?
+                Debug.Log($"[OCAK DEDEKTÝFÝ] Þu an elinde tuttuðun nesnenin tam adý: '{eldekiObje.name}'");
+
+                // Ýsminin içinde tavuk, cig, doner veya et geçen her þeyi kabul edecek þekilde esnetiyoruz
+                if (nesneAdi.Contains("tavuk") || nesneAdi.Contains("cig") || nesneAdi.Contains("chicken") || nesneAdi.Contains("doner"))
+                {
+                    elindeTavukVarMi = true;
+                }
+            }
         }
 
         // 1. DÝNAMÝK YAZI KONTROLÜ
@@ -80,18 +116,14 @@ public class DonerMakinesi : MonoBehaviour
             {
                 eTusuYazisi.gameObject.SetActive(true);
 
-                if (donerSogukMu && !makineAcikMi)
-                {
+                if (elindeTavukVarMi)
+                    eTusuYazisi.text = "Çið Tavuðu Ocaða Takmak Ýçin E'ye Bas";
+                else if (donerSogukMu && !makineAcikMi)
                     eTusuYazisi.text = "Döneri Isýtmak Ýçin E'ye Bas";
-                }
                 else if (makineAcikMi)
-                {
                     eTusuYazisi.text = "Makineyi Kapatmak Ýçin E'ye Bas";
-                }
                 else
-                {
                     eTusuYazisi.text = "Makineyi Açmak Ýçin E'ye Bas";
-                }
             }
         }
         else
@@ -99,23 +131,49 @@ public class DonerMakinesi : MonoBehaviour
             if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         }
 
-        // 2. E TUÞU
+        // 2. E TUÞU KONTROLÜ
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
-            if (donerSogukMu && !makineAcikMi)
+            if (elindeTavukVarMi)
             {
-                if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
-                isiniyorMu = true;
-                if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(true);
+                if (kalanYaprakSayisi > 0 && kalanYaprakSayisi < maxYaprakSayisi)
+                {
+                    donereCigTavukEklendiMi = true;
+                    Debug.Log("<color=red><b>[ÇAPRAZ BULAÞMA]:</b> Bitmemiþ dönerin üstüne çið tavuk basýldý! Müþteriler zehirlenecek!</color>");
+                }
+                else
+                {
+                    donereCigTavukEklendiMi = false;
+                    Debug.Log("[OCAK]: Boþ ocaða yeni, temiz çið tavuk takýldý.");
+                }
+
+                kalanYaprakSayisi = maxYaprakSayisi;
+                DurumuGuncelle(DonerDurumu.Cig);
+
+                if (makineyeYakinOyuncu != null)
+                {
+                    makineyeYakinOyuncu.EldenBirakVeSil();
+                }
+
+                if (donerEtiRenderer != null) donerEtiRenderer.enabled = true;
             }
             else
             {
-                makineAcikMi = !makineAcikMi;
+                if (donerSogukMu && !makineAcikMi)
+                {
+                    if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
+                    isiniyorMu = true;
+                    if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(true);
+                }
+                else
+                {
+                    makineAcikMi = !makineAcikMi;
+                }
             }
         }
 
         // 3. DÖNME, PÝÞME ve SOÐUMA
-        if (makineAcikMi)
+        if (makineAcikMi && kalanYaprakSayisi > 0)
         {
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", true);
             sogumaSayaci = 0f;
@@ -148,7 +206,7 @@ public class DonerMakinesi : MonoBehaviour
         // 4. Q TUÞU
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.Q))
         {
-            if (makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
+            if (kalanYaprakSayisi > 0 && makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
             {
                 kesimYapiliyorMu = !kesimYapiliyorMu;
 
@@ -181,7 +239,6 @@ public class DonerMakinesi : MonoBehaviour
         }
     }
 
-    // --- YENÝ: DURUM GÜNCELLEME MERKEZÝ ---
     private void DurumuGuncelle(DonerDurumu yeniDurum)
     {
         anlikDurum = yeniDurum;
@@ -203,7 +260,6 @@ public class DonerMakinesi : MonoBehaviour
                 if (donerEtiRenderer != null) donerEtiRenderer.material = cokPismisMat;
                 break;
         }
-        Debug.Log("Döner durumu deðiþti: " + anlikDurum);
     }
 
     void EtKesipDusur()
@@ -211,7 +267,7 @@ public class DonerMakinesi : MonoBehaviour
         if (donerDilimPrefab != null && kesimNoktasi != null)
         {
             atilanKesikSayisi++;
-            Debug.Log("Et kesildi! Mevcut katmandaki kesik: " + atilanKesikSayisi);
+            kalanYaprakSayisi--;
 
             GameObject yeniDilim = Instantiate(donerDilimPrefab, kesimNoktasi.position, Quaternion.identity);
 
@@ -225,10 +281,10 @@ public class DonerMakinesi : MonoBehaviour
             if (dilimScript != null)
             {
                 dilimScript.sogukMu = this.donerSogukMu;
-                dilimScript.zehirliMi = this.zehirliMi;
+                if (donereCigTavukEklendiMi) dilimScript.zehirliMi = true;
+                else dilimScript.zehirliMi = this.zehirliMi;
             }
 
-            // 10 KESÝK KONTROLÜ
             if (atilanKesikSayisi >= 10)
             {
                 if (anlikDurum == DonerDurumu.Yandi) DurumuGuncelle(DonerDurumu.Pisti);
@@ -239,9 +295,11 @@ public class DonerMakinesi : MonoBehaviour
             {
                 StartCoroutine(TepsiyeDusmeAnimasyonu(yeniDilim, tepsiNoktasi.ustundekiTepsi));
             }
-            else
+
+            if (kalanYaprakSayisi <= 0)
             {
-                Debug.LogWarning("Ocaðýn yanýna tepsi koymadýðýn için et tezgaha düþtü!");
+                if (donerEtiRenderer != null) donerEtiRenderer.enabled = false;
+                DurdurKesimveAnimasyon();
             }
         }
     }
@@ -304,8 +362,7 @@ public class DonerMakinesi : MonoBehaviour
         hedefTepsi.EtEkle();
         hedefTepsi.isMeatCold = this.donerSogukMu;
 
-        // EÐER MAKÝNEDEKÝ ET ZEHÝRLÝYSE (Çið veya Yanýk), TEPSÝYÝ DE ZEHÝRLE
-        if (this.zehirliMi)
+        if (this.zehirliMi || this.donereCigTavukEklendiMi)
         {
             hedefTepsi.zehirliEtVarMi = true;
         }
