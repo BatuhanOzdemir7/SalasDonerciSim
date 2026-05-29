@@ -19,9 +19,40 @@ public class OyuncuEnvanter : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Q))
+        // F TUÞU: Akýllý Sistem - Hem Alýr/Etkileþir hem de (boþluða bakýyorsa) Geri Býrakýr
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            FTusuAksiyonu();
+        }
+
+        // Q TUÞU: Sadece normal etkileþim (Döner kesme mekaniðiyle çakýþmasýn diye)
+        if (Input.GetKeyDown(KeyCode.Q))
         {
             EtkilesimiKontrolEt();
+        }
+    }
+
+    void FTusuAksiyonu()
+    {
+        if (isinCikisNoktasi == null) return;
+
+        RaycastHit hit;
+        // Önümüzde etkileþime geçebileceðimiz bir nesne (Tencere, Kepçe Standý, Dolap vs.) var mý?
+        if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
+        {
+            IInteractable etkilesimliObje = hit.collider.GetComponentInParent<IInteractable>();
+            if (etkilesimliObje != null)
+            {
+                // Eðer etkileþimli bir nesne varsa onu çalýþtýr (Örn: Kepçeyi eline al veya tencereden sos al)
+                etkilesimliObje.Interact(this);
+                return; // Etkileþim gerçekleþtiði için býrakma mantýðýna geçme, burada fonksiyonu bitir.
+            }
+        }
+
+        // AKILLI DÜÞÜÞ: Eðer önümüzde etkileþime geçecek HÝÇBÝR ÞEY yoksa VE elimiz doluysa, eþyayý geri býrak!
+        if (eldeTutulanObje != null)
+        {
+            EldenBirak();
         }
     }
 
@@ -51,19 +82,40 @@ public class OyuncuEnvanter : MonoBehaviour
         eldeTutulanObje.transform.localPosition = Vector3.zero;
         eldeTutulanObje.transform.localRotation = Quaternion.identity;
 
-        Collider col = eldeTutulanObje.GetComponent<Collider>();
+        Collider col = eldeTutulanObje.GetComponentInChildren<Collider>();
         if (col != null) col.enabled = false;
 
-        Rigidbody rb = eldeTutulanObje.GetComponent<Rigidbody>();
+        Rigidbody rb = eldeTutulanObje.GetComponentInChildren<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
     }
 
     public void EldenBirak()
     {
-        eldeTutulanObje = null;
+        if (eldeTutulanObje != null)
+        {
+            Kepce kepceScript = eldeTutulanObje.GetComponentInChildren<Kepce>();
+
+            eldeTutulanObje.transform.SetParent(null);
+
+            if (kepceScript != null)
+            {
+                // Kepçeyse bumerang gibi tezgahtaki orijinal yerine ýþýnlanýr
+                kepceScript.IstasyonaDon();
+            }
+            else
+            {
+                // Diðer malzemelerse (tavuk, kola vs.) fiziksel olarak yere/tezgaha düþer
+                Collider col = eldeTutulanObje.GetComponentInChildren<Collider>();
+                if (col != null) col.enabled = true;
+
+                Rigidbody rb = eldeTutulanObje.GetComponentInChildren<Rigidbody>();
+                if (rb != null) rb.isKinematic = false;
+            }
+
+            eldeTutulanObje = null;
+        }
     }
 
-    // Malzemeyi dolaba geri koyduðunda onu dünyadan siler
     public void EldenBirakVeSil()
     {
         if (eldeTutulanObje != null)
@@ -77,17 +129,16 @@ public class OyuncuEnvanter : MonoBehaviour
     {
         if (eldeTutulanObje != null)
         {
-            return eldeTutulanObje.GetComponent<Tray>();
+            return eldeTutulanObje.GetComponentInChildren<Tray>();
         }
         return null;
     }
 
-    // Oyuncunun elindeki objenin bir "Malzeme" olup olmadýðýný kontrol eder
     public Malzeme GetHeldMalzeme()
     {
         if (eldeTutulanObje != null)
         {
-            return eldeTutulanObje.GetComponent<Malzeme>();
+            return eldeTutulanObje.GetComponentInChildren<Malzeme>();
         }
         return null;
     }

@@ -83,7 +83,7 @@ public class DonerMakinesi : MonoBehaviour
                 kalanYaprakText.text = "DÖNER BÝTTÝ!";
         }
 
-        // MAKÝNE DURUMU GÜNCELLEMESÝ (Açýk/Kapalý ve Renkli)
+        // 2. MAKÝNE DURUMU GÜNCELLEMESÝ (Açýk/Kapalý ve Renkli)
         if (makineDurumText != null)
         {
             if (makineAcikMi)
@@ -102,7 +102,7 @@ public class DonerMakinesi : MonoBehaviour
             return;
         }
 
-        // TAVUK DETEKTÝF SÝSTEMÝ
+        // 3. TAVUK DETEKTÝF SÝSTEMÝ
         bool elindeTavukVarMi = false;
         if (oyuncuYakindaMi && makineyeYakinOyuncu != null)
         {
@@ -117,7 +117,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // DÝNAMÝK YAZI KONTROLÜ
+        // 4. DÝNAMÝK YAZI KONTROLÜ
         if (oyuncuYakindaMi && !kesimYapiliyorMu)
         {
             if (eTusuYazisi != null)
@@ -139,7 +139,7 @@ public class DonerMakinesi : MonoBehaviour
             if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         }
 
-        // E TUÞU KONTROLÜ
+        // 5. E TUÞU KONTROLÜ
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
             if (elindeTavukVarMi)
@@ -180,7 +180,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // 3. DÖNME, PÝÞME ve SOÐUMA
+        // 6. DÖNME, PÝÞME ve SOÐUMA
         if (makineAcikMi && kalanYaprakSayisi > 0)
         {
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", true);
@@ -194,7 +194,7 @@ public class DonerMakinesi : MonoBehaviour
                 {
                     DurumuGuncelle(DonerDurumu.Pisti);
                 }
-                // BATUHAN'IN YANMA MEKANÝÐÝ: Artýk yanma süresi ayrý bir deðiþkenden kontrol ediliyor (30s)
+                // BATUHAN'IN YANMA MEKANÝÐÝ
                 else if (anlikDurum == DonerDurumu.Pisti && pismeSuresi >= yanmasiIcinGerekenSure)
                 {
                     DurumuGuncelle(DonerDurumu.Yandi);
@@ -212,7 +212,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // Q TUÞU
+        // 7. Q TUÞU
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.Q))
         {
             if (kalanYaprakSayisi > 0 && makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
@@ -226,7 +226,7 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // OTOMATÝK KESÝM
+        // 8. OTOMATÝK KESÝM
         if (kesimYapiliyorMu)
         {
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(true);
