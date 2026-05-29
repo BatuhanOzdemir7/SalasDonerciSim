@@ -3242,7 +3242,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf711f9419e12144784896da8993a55d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sosGorseli: {fileID: 0}
+  sosGorseli: {fileID: 795981003}
   doluMu: 1
 --- !u!65 &472130251
 BoxCollider:
@@ -6186,6 +6186,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ca9fedc3dd942b45b7ddf53e055a886, type: 3}
+--- !u!1 &795981003 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 453737972866302270, guid: e6a7b467a9a4c9546a1c866e6bf6e53b, type: 3}
+  m_PrefabInstance: {fileID: 2115090755886827239}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &818493337
 GameObject:
   m_ObjectHideFlags: 0
@@ -10246,7 +10251,7 @@ Transform:
   m_GameObject: {fileID: 1168884963}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.55, z: 0}
+  m_LocalPosition: {x: -0, y: 0.55, z: -0.006}
   m_LocalScale: {x: 1.5834045, y: 0.3141772, z: 1.5834045}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17915,7 +17920,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7377847636495732265, guid: e6a7b467a9a4c9546a1c866e6bf6e53b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.7
+      value: 1.752
       objectReference: {fileID: 0}
     - target: {fileID: 7377847636495732265, guid: e6a7b467a9a4c9546a1c866e6bf6e53b, type: 3}
       propertyPath: m_LocalPosition.z

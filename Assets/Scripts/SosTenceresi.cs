@@ -10,49 +10,51 @@ public class SosTenceresi : MonoBehaviour, IInteractable
     {
         Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
 
-        // DURUM 1: Oyuncunun elleri boş ve kazanda kepçe varsa -> Kepçeyi Al
+        // 1. KEPÇE ALMA MANTIĞI
         if (eldekiMalzeme == null && icindekiKepce != null)
         {
-            Collider[] colliders = icindekiKepce.GetComponentsInChildren<Collider>(true);
-            foreach (Collider c in colliders) c.enabled = false;
-
+            // Kepçeyi oyuncuya ver
             oyuncu.PickUpItem(icindekiKepce);
+
+            // Tenceredeki referansı temizle ki artık "boş" bilsin
             icindekiKepce = null;
-            Debug.Log("Kepçe kazandan ele alındı ve lazeri engellememesi için TÜM collider'lar kapatıldı.");
+
+            Debug.Log("Kepçe tencereden alındı.");
         }
-        // DURUM 2: Oyuncunun elinde bir 'Malzeme' varsa -> Kepçeyi Kazana Geri Koy
+        // 2. KEPÇE KOYMA MANTIĞI
         else if (eldekiMalzeme != null)
         {
-            string objeAdi = eldekiMalzeme.name.ToLower();
+            // Elindeki nesnenin kepçe olup olmadığını kontrol et
+            Kepce kepceScript = eldekiMalzeme.GetComponentInChildren<Kepce>();
 
-            if (objeAdi.Contains("kepce") || objeAdi.Contains("kepçe") || objeAdi.Contains("ladle"))
+            if (kepceScript != null)
             {
+                // Oyuncunun elindeki kepçeyi tencerenin konumuna sabitle
                 GameObject kepceObjesi = eldekiMalzeme.gameObject;
+                oyuncu.EldenBirak(); // Oyuncu elinden bırakır
 
-                oyuncu.EldenBirak();
-
+                // Tencere artık kepçeyi "içinde" tutuyor
                 icindekiKepce = kepceObjesi;
+
+                // Kepçeyi tencereye ışınla
                 icindekiKepce.transform.SetParent(kepceninDuracagiYer != null ? kepceninDuracagiYer : transform);
                 icindekiKepce.transform.localPosition = Vector3.zero;
                 icindekiKepce.transform.localRotation = Quaternion.identity;
 
-                Collider[] colliders = icindekiKepce.GetComponentsInChildren<Collider>(true);
-                foreach (Collider c in colliders) c.enabled = true;
+                // Fiziği dondur ve istasyona dönme kodunu tetikle
+                kepceScript.IstasyonaDon();
 
-                Kepce kepceScript = icindekiKepce.GetComponent<Kepce>();
-                if (kepceScript != null) kepceScript.SosuDoldur();
-
-                Debug.Log("<color=green>BAŞARILI: Kepçe kazana geri kondu ve sosla dolduruldu.</color>");
+                Debug.Log("Kepçe tencereye başarıyla geri konuldu.");
             }
             else
             {
-                Debug.LogWarning("UYARI: Kazana bir şey koymak istiyorsun ama elindeki obje Kepçe olarak tanınmadı! Adı: " + eldekiMalzeme.name);
+                Debug.Log("Bu tencereye sadece kepçe konulabilir.");
             }
         }
-        // DURUM 3: SESSİZ HATA YAKALAYICI (TUZAK)
-        else if (eldekiMalzeme == null && icindekiKepce == null)
+        // 3. BOŞ TENCERE DURUMU
+        else if (icindekiKepce == null)
         {
-            Debug.LogError("HATA YAKALANDI: Tencereye tıkladın ama oyun ellerinin BOMBOŞ olduğunu sanıyor! Lütfen Hiyerarşideki 'kepce' objesine tıklayıp Inspector panelinden 'Malzeme' (Malzeme.cs) scriptini eklediğinden emin ol.");
+            Debug.Log("Tencere şu an boş.");
         }
     }
 }

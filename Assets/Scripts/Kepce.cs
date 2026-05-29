@@ -32,19 +32,28 @@ public class Kepce : MonoBehaviour
     // YENİ: G'ye basılınca çağrılacak ışınlanma fonksiyonu
     public void IstasyonaDon()
     {
+        // 1. Rigidbody'i (Fiziği) bul ve yerçekimini/hızını tamamen dondur
+        Rigidbody rb = GetComponent<Rigidbody>();
+        if (rb == null) rb = GetComponentInChildren<Rigidbody>(); // Bulamazsa çocuklara bak
+
+        if (rb != null)
+        {
+            rb.velocity = Vector3.zero;        // Düşme hızını sıfırla
+            rb.angularVelocity = Vector3.zero; // Dönme hızını sıfırla
+            rb.isKinematic = true;             // Yerçekimini ve çarpmaları kapat
+        }
+
+        // 2. Kepçeyi ilk günkü yerine ışınla
         transform.position = baslangicPozisyonu;
         transform.rotation = baslangicRotasyonu;
 
-        // Yerçekiminden etkilenip düşmemesi için
-        Rigidbody rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            rb.velocity = Vector3.zero;
-            rb.isKinematic = true;
-        }
-
-        // Yeniden elimize alabilelim diye collider'ı açıyoruz
+        // 3. Etkileşime girebilmek için Collider'ı (Fiziksel Kutuyu) geri aç
         Collider col = GetComponent<Collider>();
+        if (col == null) col = GetComponentInChildren<Collider>();
+
         if (col != null) col.enabled = true;
+
+        // (Ekstra) Yerine dönünce sosu fulle
+        SosuDoldur();
     }
 }
