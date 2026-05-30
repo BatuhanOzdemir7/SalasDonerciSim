@@ -1,40 +1,39 @@
 using UnityEngine;
 using System.Collections;
 
-public class IcecekDolabi : MonoBehaviour, IInteractable
+public class İcecekDolabi : MonoBehaviour, IInteractable
 {
     [Header("Kapak Ayarları")]
-    public Transform dolapKapagi; // Kapağı (veya Menteshe objesini) buraya sürükleyeceğiz
-    public float acikAci = 90f;   // Kapağın açılma yönüne göre bunu 90 veya -90 yapabilirsin
+    public Transform dolapKapagi;
+    public float acikAci = -90f;
     private bool kapakAcikMi = false;
     private Coroutine kapakAnimasyonu;
 
     [Header("Arayüz (Canvas)")]
-    public GameObject dolapMenusuCanvas; // Yeni yapacağımız İçecek menüsü
+    public GameObject İcecek_Menusu;
     private OyuncuEnvanter islemYapanOyuncu;
 
     public float kapanmaMesafesi = 4f;
 
-    [Header("İçecek Prefabları")]
+    [Header("Malzeme Prefabları")]
     public GameObject ayranPrefab;
-    public GameObject kolaPrefab;
     public GameObject suPrefab;
-    public GameObject salgamPrefab;
+    public GameObject kolaPrefab;
 
     void Start()
     {
-        if (dolapMenusuCanvas != null) dolapMenusuCanvas.SetActive(false);
+        if (İcecek_Menusu != null) İcecek_Menusu.SetActive(false);
     }
 
     void Update()
     {
-        // Oyuncu uzaklaşırsa menüyü ve kapağı kapat
-        if (islemYapanOyuncu != null && dolapMenusuCanvas != null && dolapMenusuCanvas.activeSelf)
+        if (islemYapanOyuncu != null && İcecek_Menusu != null && İcecek_Menusu.activeSelf)
         {
             float mesafe = Vector3.Distance(transform.position, islemYapanOyuncu.transform.position);
 
             if (mesafe > kapanmaMesafesi)
             {
+                Debug.Log("Oyuncu dolaptan uzaklaştı, kapak örtülüyor.");
                 Buton_MenuyuKapat();
             }
         }
@@ -42,36 +41,34 @@ public class IcecekDolabi : MonoBehaviour, IInteractable
 
     public void Interact(OyuncuEnvanter oyuncu)
     {
-        // Elinde bir şey varsa dolaba geri koy
         if (oyuncu.GetHeldMalzeme() != null)
         {
             oyuncu.EldenBirakVeSil();
+            Debug.Log("Malzeme dolaba geri kondu.");
             return;
         }
 
-        // Elinde tepsi veya bıçak varsa uyarı ver
         if (oyuncu.GetHeldTray() != null || oyuncu.bicakVarMi)
         {
-            Debug.Log("İçecek almak için ellerin boş olmalı!");
+            Debug.Log("Dolabı kullanmak için elindeki eşyayı tezgaha bırakmalısın!");
             return;
         }
 
         islemYapanOyuncu = oyuncu;
 
-        // Kapağı aç
         if (!kapakAcikMi)
         {
             if (kapakAnimasyonu != null) StopCoroutine(kapakAnimasyonu);
             kapakAnimasyonu = StartCoroutine(KapakDondur(acikAci));
         }
 
-        // Menüyü göster
-        if (dolapMenusuCanvas != null) dolapMenusuCanvas.SetActive(true);
+        if (İcecek_Menusu != null) İcecek_Menusu.SetActive(true);
     }
 
     IEnumerator KapakDondur(float hedefAci)
     {
         kapakAcikMi = Mathf.Abs(hedefAci) > 0.1f;
+
         Quaternion baslangicRot = dolapKapagi.localRotation;
         Quaternion hedefRot = Quaternion.Euler(0, hedefAci, 0);
 
@@ -87,18 +84,15 @@ public class IcecekDolabi : MonoBehaviour, IInteractable
         dolapKapagi.localRotation = hedefRot;
     }
 
-    // Buton fonksiyonları
     public void Buton_AyranAl() { MalzemeVer(ayranPrefab); }
-    public void Buton_KolaAl() { MalzemeVer(kolaPrefab); }
     public void Buton_SuAl() { MalzemeVer(suPrefab); }
-    public void Buton_SalgamAl() { MalzemeVer(salgamPrefab); }
+    public void Buton_KolaAl() { MalzemeVer(kolaPrefab); }
 
     public void Buton_MenuyuKapat()
     {
-        if (dolapMenusuCanvas != null) dolapMenusuCanvas.SetActive(false);
+        if (İcecek_Menusu != null) İcecek_Menusu.SetActive(false);
         islemYapanOyuncu = null;
 
-        // Kapağı geri ört
         if (kapakAcikMi)
         {
             if (kapakAnimasyonu != null) StopCoroutine(kapakAnimasyonu);
@@ -110,8 +104,10 @@ public class IcecekDolabi : MonoBehaviour, IInteractable
     {
         if (islemYapanOyuncu != null && secilenPrefab != null)
         {
-            GameObject yeniIcecek = Instantiate(secilenPrefab);
-            islemYapanOyuncu.PickUpItem(yeniIcecek);
+            GameObject yeniMalzeme = Instantiate(secilenPrefab);
+
+
+            islemYapanOyuncu.PickUpItem(yeniMalzeme);
             Buton_MenuyuKapat();
         }
     }
