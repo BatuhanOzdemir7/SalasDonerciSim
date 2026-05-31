@@ -1470,9 +1470,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 366473750}
-        m_TargetAssemblyTypeName: Buzdolabi, Assembly-CSharp
-        m_MethodName: Buton_PatatesAl
+      - m_Target: {fileID: 559027510}
+        m_TargetAssemblyTypeName: "\u0130cecekDolabi, Assembly-CSharp"
+        m_MethodName: Buton_SuAl
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3930,12 +3930,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dolapKapagi: {fileID: 559027508}
   acikAci: 90
-  dolapMenusuCanvas: {fileID: 274482710}
+  "\u0130cecek_Menusu": {fileID: 274482710}
   kapanmaMesafesi: 4
   ayranPrefab: {fileID: 1484772330480045332, guid: bf72e2b55a814304992597c74398e19c, type: 3}
-  kolaPrefab: {fileID: 0}
-  suPrefab: {fileID: 0}
-  salgamPrefab: {fileID: 0}
+  suPrefab: {fileID: 2065283815077802984, guid: b9b05a2498a875e409b061158b718048, type: 3}
+  kolaPrefab: {fileID: 8460815518432165310, guid: bb7e463bfbfa96246984fea97b206f0b, type: 3}
 --- !u!65 &559027514
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8658,9 +8657,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 366473750}
-        m_TargetAssemblyTypeName: Buzdolabi, Assembly-CSharp
-        m_MethodName: Buton_tursuAl
+      - m_Target: {fileID: 559027510}
+        m_TargetAssemblyTypeName: "\u0130cecekDolabi, Assembly-CSharp"
+        m_MethodName: Buton_KolaAl
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
