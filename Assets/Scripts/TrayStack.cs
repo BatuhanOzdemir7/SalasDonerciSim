@@ -7,7 +7,6 @@ public class TrayStack : MonoBehaviour, IInteractable
     [Header("Yýðýn Ayarlarý")]
     public GameObject tepsiPrefab;
 
-    // Artýk Inspector'dan elle doldurmana gerek yok, kod otomatik listeyi temizleyip baþtan dizecek
     [HideInInspector] public List<GameObject> gorselTepsiler = new List<GameObject>();
     [HideInInspector] public int mevcutTepsiSayisi;
 
@@ -25,7 +24,36 @@ public class TrayStack : MonoBehaviour, IInteractable
             {
                 gorselTepsiler.Add(child.gameObject);
 
-                // KESÝN ÇÖZÜM: Yýðýndaki dekoratif tepsilerin lazeri sabote etmesini engellemek için
+                // YENÝ KORUMA SÝSTEMÝ: Yýðýndaki tepsilerin içinde açýk kalmýþ 
+                // içecek veya yiyecek modelleri varsa oyun baþýnda otomatik olarak temizler.
+                Tray trayScript = child.GetComponent<Tray>();
+                if (trayScript != null)
+                {
+                    trayScript.ayranVarMi = false;
+                    trayScript.suVarMi = false;
+                    trayScript.kolaVarMi = false;
+                    trayScript.patatesVarMi = false;
+                    trayScript.isDurum = false;
+                    trayScript.tepsidekiEtSayisi = 0;
+                    trayScript.GorselleriGuncelle();
+                }
+                else
+                {
+                    // Eðer tepsi üzerinde Tray scripti olmasýna raðmen gizlenmediyse, 
+                    // isme göre alt objeleri tarayýp kaba kuvvetle kapatýyoruz.
+                    foreach (Transform altObje in child)
+                    {
+                        string altObjeAdi = altObje.name.ToLower();
+                        if (altObjeAdi.Contains("kola") || altObjeAdi.Contains("cola") ||
+                            altObjeAdi.Contains("ayran") || altObjeAdi.Contains("su") ||
+                            altObjeAdi.Contains("fries") || altObjeAdi.Contains("patates"))
+                        {
+                            altObje.gameObject.SetActive(false);
+                        }
+                    }
+                }
+
+                // Yýðýndaki dekoratif tepsilerin lazeri sabote etmesini engellemek için
                 // kendi bireysel collider bileþenlerini oyun baþýnda kapatýyoruz.
                 Collider childCol = child.GetComponent<Collider>();
                 if (childCol != null)
@@ -47,8 +75,7 @@ public class TrayStack : MonoBehaviour, IInteractable
     {
         Tray eldekiTepsi = oyuncu.GetHeldTray();
 
-        // DURUM 1: Oyuncunun elinde halihazýrda DOLU bir tepsi varsa
-        // ÖNEMLÝ: Bu kontrolü en baþa aldýk ki iþlem anýnda engellensin
+        // DURUM 1: Oyuncunun halihazýrda DOLU bir tepsisi varsa yerleþtiremez
         if (eldekiTepsi != null && !eldekiTepsi.TepsiBosMu())
         {
             Debug.Log("Dolu tepsiyi istasyona koyamazsýn! Önce içindekileri çöpe dökmelisin.");
