@@ -31,7 +31,6 @@ public class OyuncuEnvanter : MonoBehaviour
             EtkilesimiKontrolEt();
         }
     }
-
     void FTusuAksiyonu()
     {
         if (isinCikisNoktasi == null) return;
@@ -43,15 +42,26 @@ public class OyuncuEnvanter : MonoBehaviour
             IInteractable etkilesimliObje = hit.collider.GetComponentInParent<IInteractable>();
             if (etkilesimliObje != null)
             {
-                // Eðer etkileþimli bir nesne varsa onu çalýþtýr (Örn: Kepçeyi eline al veya tencereden sos al)
+                // Eðer etkileþimli bir nesne varsa onu çalýþtýr 
+                // (Eðer bakýlan yer TepsiBirakmaNoktasi ise tepsi oraya kilitlenecektir)
                 etkilesimliObje.Interact(this);
                 return; // Etkileþim gerçekleþtiði için býrakma mantýðýna geçme, burada fonksiyonu bitir.
             }
         }
 
-        // AKILLI DÜÞÜÞ: Eðer önümüzde etkileþime geçecek HÝÇBÝR ÞEY yoksa VE elimiz doluysa, eþyayý geri býrak!
+        // AKILLI DÜÞÜÞ GÜNCELLEMESÝ: Eðer önümüzde etkileþime geçecek HÝÇBÝR ÞEY yoksa VE elimiz doluysa...
         if (eldeTutulanObje != null)
         {
+            Tray eldekiTepsi = GetHeldTray();
+
+            // KONTROL: Eðer elimizde tuttuðumuz obje bir TEPSÝ ise, boþluða býrakmayý tamamen engelle.
+            if (eldekiTepsi != null)
+            {
+                Debug.Log("Uyarý: Tepsiyi sadece uygun istasyonlara býrakabilirsiniz!");
+                return; // Fonksiyonu burada durdur, tepsiyi havada býrakma.
+            }
+
+            // Eðer elimizdeki obje tepsi DEÐÝLSE (lavaþ, domates, kola vs.), eski mantýkla yere/tezgaha býrakmasýna izin ver.
             EldenBirak();
         }
     }
