@@ -47,7 +47,7 @@ public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
             if (qTusunaBasildiMi || eldekiMalzeme != null)
             {
                 ustundekiTepsi.Interact(oyuncu);
-                SayaciGuncelle();
+                SayaciGuncelle();   
                 return;
             }
 

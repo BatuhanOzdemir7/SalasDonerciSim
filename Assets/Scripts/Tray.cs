@@ -49,14 +49,13 @@ public class Tray : MonoBehaviour, IInteractable
             orijinalBoyut = transform.localScale;
         }
 
-        // KESÝN ÇÖZÜM: Inspector'da yanlýþlýkla tikli kalma ihtimaline karþý 
-        // oyun baþlar baþlamaz içecek ve patates verilerini zorla sýfýrlýyoruz.
         ayranVarMi = false;
         suVarMi = false;
         kolaVarMi = false;
         patatesVarMi = false;
 
-        GorselleriGuncelle(); // Þimdi tepsiyi pýrýl pýrýl yapacak
+        GorselleriGuncelle();
+        DurumVerileriniGuncelle(); // Oyun baþlarken de senkronize et
     }
 
     public void Interact(OyuncuEnvanter oyuncu)
@@ -64,7 +63,6 @@ public class Tray : MonoBehaviour, IInteractable
         Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
         bool qTusunaBasildiMi = Input.GetKey(KeyCode.Q) || Input.GetKeyDown(KeyCode.Q);
 
-        // Q Tuþu Ýþlemleri (Lavaþ, Malzemeler, Kepçe ve Ýçecekler)
         if (qTusunaBasildiMi)
         {
             if (eldekiMalzeme != null)
@@ -143,14 +141,14 @@ public class Tray : MonoBehaviour, IInteractable
                 // 7. AYRAN
                 else if (objeAdi.Contains("ayran"))
                 {
-                    if (!ayranVarMi && !suVarMi && !kolaVarMi) // Tepside hiçbir içecek yoksa
+                    if (!ayranVarMi && !suVarMi && !kolaVarMi)
                     {
                         ayranVarMi = true;
                         oyuncu.EldenBirakVeSil();
                         GorselleriGuncelle();
                         Debug.Log("<color=green>BAÞARILI: Tepsiye Ayran eklendi.</color>");
                     }
-                    else Debug.LogWarning("UYARI: Tepside zaten bir içecek var, yenisi eklenemez!");
+                    else Debug.LogWarning("UYARI: Tepside zaten bir içecek var!");
                 }
                 // 8. KOLA
                 else if (objeAdi.Contains("kola") || objeAdi.Contains("cola"))
@@ -162,7 +160,7 @@ public class Tray : MonoBehaviour, IInteractable
                         GorselleriGuncelle();
                         Debug.Log("<color=green>BAÞARILI: Tepsiye Kola eklendi.</color>");
                     }
-                    else Debug.LogWarning("UYARI: Tepside zaten bir içecek var, yenisi eklenemez!");
+                    else Debug.LogWarning("UYARI: Tepside zaten bir içecek var!");
                 }
                 // 9. SU
                 else if (objeAdi.Contains("su") || objeAdi.Contains("water"))
@@ -174,10 +172,14 @@ public class Tray : MonoBehaviour, IInteractable
                         GorselleriGuncelle();
                         Debug.Log("<color=green>BAÞARILI: Tepsiye Su eklendi.</color>");
                     }
-                    else Debug.LogWarning("UYARI: Tepside zaten bir içecek var, yenisi eklenemez!");
+                    else Debug.LogWarning("UYARI: Tepside zaten bir içecek var!");
                 }
-                // 10. ÝSÝM UYUÞMAZLIÐI
                 else Debug.LogWarning("Q'ya bastýn ama elindeki obje tanýnmadý! Adý: " + eldekiMalzeme.name);
+
+                // ==========================================
+                // YENÝ: Her iþlemden sonra Dürüm'ün beynine verileri yazýyoruz!
+                // ==========================================
+                DurumVerileriniGuncelle();
             }
             return;
         }
@@ -198,7 +200,6 @@ public class Tray : MonoBehaviour, IInteractable
         if (etGorselleriGrubu != null) etGorselleriGrubu.SetActive(!isDurum);
         if (patatesGorseli != null) patatesGorseli.SetActive(patatesVarMi);
 
-        // Ýçecek Görsellerinin Kontrolü
         if (ayranGorseli != null) ayranGorseli.SetActive(ayranVarMi);
         if (suGorseli != null) suGorseli.SetActive(suVarMi);
         if (kolaGorseli != null) kolaGorseli.SetActive(kolaVarMi);
@@ -218,6 +219,7 @@ public class Tray : MonoBehaviour, IInteractable
             birikenEtGorselleri.Add(yeniEtGorseli);
         }
         GorselleriGuncelle();
+        DurumVerileriniGuncelle(); // YENÝ: Et eklendiðinde de veriyi güncelle
     }
 
     public void TepsiyiSifirla()
@@ -225,11 +227,37 @@ public class Tray : MonoBehaviour, IInteractable
         tepsidekiEtSayisi = 0; isDurum = false; isMeatCold = false; eklenenMalzemeler.Clear();
         zehirliEtVarMi = false; sosVarMi = false; soganVarMi = false; marulVarMi = false; tursuVarMi = false; patatesVarMi = false;
 
-        // Ýçecekleri Sýfýrla
         ayranVarMi = false; suVarMi = false; kolaVarMi = false;
 
         foreach (GameObject et in birikenEtGorselleri) Destroy(et);
         birikenEtGorselleri.Clear();
+
         GorselleriGuncelle();
+        DurumVerileriniGuncelle(); // YENÝ: Sýfýrlanýrken de veriyi temizle
+    }
+
+    // ==========================================
+    // ÝÞTE SÝHÝRLÝ KÖPRÜ (DÜRÜMÜN KARNESÝNÝ DOLDURAN FONKSÝYON)
+    // ==========================================
+    public void DurumVerileriniGuncelle()
+    {
+        // Tepsinin altýndaki (aktif veya gizli fark etmez) Durum scriptini buluyoruz
+        Durum icindekiDurum = GetComponentInChildren<Durum>(true);
+
+        if (icindekiDurum != null)
+        {
+            // Tepsideki verileri harfiyen Durum scriptinin içine kopyalýyoruz
+            icindekiDurum.kullanilanDonerSayisi = tepsidekiEtSayisi;
+            icindekiDurum.sosKullanildiMi = sosVarMi;
+            icindekiDurum.soganVarMi = soganVarMi;
+            icindekiDurum.marulVarMi = marulVarMi;
+            icindekiDurum.tursuVarMi = tursuVarMi;
+            icindekiDurum.patatesVarMi = patatesVarMi;
+            icindekiDurum.donerZehirliMi = zehirliEtVarMi;
+        }
+        else
+        {
+            Debug.LogWarning("UYARI: Tepsinin altýnda 'Durum' scripti bulunamadý! Lütfen dürüm görseline Durum scriptini eklediðinden emin ol.");
+        }
     }
 }

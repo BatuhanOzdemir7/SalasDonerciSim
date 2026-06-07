@@ -611,7 +611,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   suAnkiDurum: 0
-  sabirSuresi: 20
+  sabirSuresi: 500
   yemekYemeSuresi: 5
   hedefSandalye: {fileID: 0}
   cikisNoktasi: {fileID: 0}
