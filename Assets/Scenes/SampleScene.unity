@@ -1167,6 +1167,7 @@ GameObject:
   m_Component:
   - component: {fileID: 117145018}
   - component: {fileID: 117145020}
+  - component: {fileID: 117145021}
   - component: {fileID: 117145019}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (2)
@@ -1198,7 +1199,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 117145017}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -1227,6 +1228,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &117145021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 117145017}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 1140647351}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1001 &124964423
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1942,6 +1958,7 @@ GameObject:
   m_Component:
   - component: {fileID: 225435019}
   - component: {fileID: 225435021}
+  - component: {fileID: 225435022}
   - component: {fileID: 225435020}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri
@@ -1973,7 +1990,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 225435018}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -2002,6 +2019,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &225435022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 225435018}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 1735012038}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1 &230609008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2191,6 +2223,7 @@ GameObject:
   m_Component:
   - component: {fileID: 270008239}
   - component: {fileID: 270008241}
+  - component: {fileID: 270008242}
   - component: {fileID: 270008240}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (1)
@@ -2222,7 +2255,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 270008238}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -2251,6 +2284,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &270008242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 270008238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 1665601653}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1 &274080453
 GameObject:
   m_ObjectHideFlags: 0
@@ -2299,17 +2347,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!223 &274080456
 Canvas:
   m_ObjectHideFlags: 0
@@ -2319,7 +2367,7 @@ Canvas:
   m_GameObject: {fileID: 274080453}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 2
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -2328,7 +2376,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
@@ -2342,16 +2390,17 @@ RectTransform:
   m_GameObject: {fileID: 274080453}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.0041409, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1136717097}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 960, y: 540}
-  m_SizeDelta: {x: 1920, y: 1080}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 0}
 --- !u!1 &274482710
 GameObject:
   m_ObjectHideFlags: 0
@@ -3237,6 +3286,7 @@ GameObject:
   m_Component:
   - component: {fileID: 424576467}
   - component: {fileID: 424576469}
+  - component: {fileID: 424576470}
   - component: {fileID: 424576468}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri
@@ -3268,7 +3318,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 424576466}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -3297,6 +3347,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 2}
   m_Center: {x: 0, y: -0.4276287, z: 0}
+--- !u!114 &424576470
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 424576466}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 437049813}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1001 &435415042
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4101,6 +4166,7 @@ GameObject:
   m_Component:
   - component: {fileID: 487886878}
   - component: {fileID: 487886880}
+  - component: {fileID: 487886881}
   - component: {fileID: 487886879}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (1)
@@ -4161,6 +4227,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &487886881
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 487886877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 989625530}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!4 &489481029 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4657534560574962482, guid: 903bb09a886b1724a8b2f057356340ec, type: 3}
@@ -4176,6 +4257,7 @@ GameObject:
   m_Component:
   - component: {fileID: 502519386}
   - component: {fileID: 502519388}
+  - component: {fileID: 502519389}
   - component: {fileID: 502519387}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (2)
@@ -4207,7 +4289,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 502519385}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -4236,6 +4318,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &502519389
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 502519385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 842442047}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1 &512348195
 GameObject:
   m_ObjectHideFlags: 0
@@ -4246,6 +4343,7 @@ GameObject:
   m_Component:
   - component: {fileID: 512348196}
   - component: {fileID: 512348198}
+  - component: {fileID: 512348199}
   - component: {fileID: 512348197}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (2)
@@ -4277,7 +4375,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 512348195}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -4306,6 +4404,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &512348199
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 512348195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 1871853815}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1001 &519923209
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4867,10 +4980,18 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.0001
       objectReference: {fileID: 0}
+    - target: {fileID: -8418885108249170206, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -6946252586063992448, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c2ab24b85287b244d887ab192095cac3, type: 2}
+    - target: {fileID: -5976071629391176779, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -5647438765818059359, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -4879,6 +5000,22 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c2ab24b85287b244d887ab192095cac3, type: 2}
+    - target: {fileID: -4642701442031850365, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -4383513866370633153, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3665404723985176251, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: -3477864577585124648, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: -2942907718953753970, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -4891,14 +5028,34 @@ PrefabInstance:
       propertyPath: m_Name
       value: yazarkasa
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1638927290707054087, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.58
+      objectReference: {fileID: 0}
+    - target: {fileID: 3841635905431140755, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4221408080920133548, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c2ab24b85287b244d887ab192095cac3, type: 2}
+    - target: {fileID: 6574091114309173524, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6773935864695782916, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7945505248770008052, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8280704227580990285, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
@@ -4916,11 +5073,17 @@ PrefabInstance:
     - {fileID: 8935734418329873869, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
     - {fileID: 7026225232694396547, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
     - {fileID: 2158908940895158587, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1124314842}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 875759536}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 875759538}
   m_SourcePrefab: {fileID: 100100000, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
 --- !u!1001 &605449642
 PrefabInstance:
@@ -6683,7 +6846,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 0
   m_ProvidesContacts: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_Size: {x: 0.45060182, y: 0.2664188, z: 0.18692599}
   m_Center: {x: 0, y: 0.1332094, z: 0.006014441}
@@ -8020,6 +8183,35 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   kasaBeklemeNoktasi: {fileID: 1633225560}
+  toplamCiro: 0
+  durumFiyati: 150
+  ciroYazisi: {fileID: 1136717098}
+--- !u!4 &875759537 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 0828839531c8a50459a40a11c4e2594e, type: 3}
+  m_PrefabInstance: {fileID: 604203459}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &875759538
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 875759534}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.8116767, y: 0.9394586, z: 0.9335541}
+  m_Center: {x: -0.09416367, y: -0.030272355, z: -0.033225816}
 --- !u!1001 &884930538
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10961,13 +11153,147 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1124314838}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.6892, y: 3.8093, z: 1.02}
-  m_LocalScale: {x: 6.7903695, y: 1.9652066, z: 0.01}
+  m_LocalRotation: {x: -0, y: 0.71100426, z: -0, w: 0.70318776}
+  m_LocalPosition: {x: -0.3287674, y: 0.541885, z: 0.86923826}
+  m_LocalScale: {x: 1.4602437, y: 0.588579, z: 0.0028454037}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 875759537}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1136717096
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1136717097}
+  - component: {fileID: 1136717099}
+  - component: {fileID: 1136717098}
+  m_Layer: 5
+  m_Name: CiroYazisi
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1136717097
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136717096}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 274080457}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 100, y: -569}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1136717098
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136717096}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 0 TL
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: d4497c903926fc64b83849cf274ec1d4, type: 2}
+  m_sharedMaterial: {fileID: 936007992230482666, guid: d4497c903926fc64b83849cf274ec1d4, type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4279893760
+  m_fontColor: {r: 0, g: 1, b: 0.096443415, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 36
+  m_fontSizeBase: 36
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 1
+  m_VerticalAlignment: 256
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 32.319107, y: -527.49756, z: -19.922737, w: 525.658}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1136717099
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1136717096}
+  m_CullTransparentMesh: 1
 --- !u!1 &1140647350
 GameObject:
   m_ObjectHideFlags: 0
@@ -11921,7 +12247,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2728292468360604703, guid: adcaf21558317c14b9f97458dc8911ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.47
+      value: 7.25
       objectReference: {fileID: 0}
     - target: {fileID: 2728292468360604703, guid: adcaf21558317c14b9f97458dc8911ce, type: 3}
       propertyPath: m_LocalPosition.y
@@ -14044,6 +14370,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1532219955}
   - component: {fileID: 1532219957}
+  - component: {fileID: 1532219958}
   - component: {fileID: 1532219956}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (1)
@@ -14075,7 +14402,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1532219954}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -14104,6 +14431,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1532219958
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1532219954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 673433906}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1 &1540492785 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8541640980781299923, guid: ae4f383732747144e9d984b108648700, type: 3}
@@ -15105,13 +15447,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1633225559}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.65325344, z: -0, w: 0.7571393}
+  m_LocalRotation: {x: -0, y: 0.011829412, z: -0, w: 0.99993}
   m_LocalPosition: {x: -14.802, y: 1.693, z: 2.583}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 81.575, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 1.356, z: 0}
 --- !u!4 &1638398763 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2292657931929769902, guid: bf72e2b55a814304992597c74398e19c, type: 3}
@@ -15785,6 +16127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1698286075}
   - component: {fileID: 1698286077}
+  - component: {fileID: 1698286078}
   - component: {fileID: 1698286076}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (2)
@@ -15816,7 +16159,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1698286074}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -15845,6 +16188,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 2, y: 2, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1698286078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1698286074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 1915970216}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!4 &1702685825 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4657534560574962482, guid: 903bb09a886b1724a8b2f057356340ec, type: 3}
@@ -15872,7 +16230,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2728292468360604703, guid: adcaf21558317c14b9f97458dc8911ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 2.72
+      value: 3.28
       objectReference: {fileID: 0}
     - target: {fileID: 2728292468360604703, guid: adcaf21558317c14b9f97458dc8911ce, type: 3}
       propertyPath: m_LocalPosition.y
@@ -16228,6 +16586,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1764351200}
   - component: {fileID: 1764351202}
+  - component: {fileID: 1764351203}
   - component: {fileID: 1764351201}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri
@@ -16259,7 +16618,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1764351199}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -16288,6 +16647,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1764351203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1764351199}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 887253328}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1001 &1771952936
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -16859,7 +17233,7 @@ MonoBehaviour:
   - {fileID: 1143143841}
   - {fileID: 164321430}
   - {fileID: 1885059845}
-  musteriGelmeAraligi: 7
+  musteriGelmeAraligi: 50
 --- !u!4 &1853453546
 Transform:
   m_ObjectHideFlags: 0
@@ -16977,6 +17351,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1863573305}
   - component: {fileID: 1863573307}
+  - component: {fileID: 1863573308}
   - component: {fileID: 1863573306}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri (1)
@@ -17008,7 +17383,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1863573304}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -17037,6 +17412,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1863573308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1863573304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 2000862139}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1 &1871853814
 GameObject:
   m_ObjectHideFlags: 0
@@ -18022,6 +18412,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1965080675}
   - component: {fileID: 1965080677}
+  - component: {fileID: 1965080678}
   - component: {fileID: 1965080676}
   m_Layer: 0
   m_Name: Tepsi_Birakma_Yeri
@@ -18053,7 +18444,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1965080674}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 88de78a70d75c7347b0886525a97b997, type: 3}
   m_Name: 
@@ -18082,6 +18473,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 2, z: 2}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1965080678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1965080674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54793a423b60ae54f9e5c524c6ce6d41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tepsininDuracagiYer: {fileID: 628622375}
+  ustundekiTepsi: {fileID: 0}
+  algilamaYaricapi: 1
 --- !u!1 &1974596180 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4643466584054242252, guid: 34874ef459bf8644084e8f23a051a10b, type: 3}
@@ -18288,7 +18694,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2728292468360604703, guid: adcaf21558317c14b9f97458dc8911ce, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.81
+      value: -0.71
       objectReference: {fileID: 0}
     - target: {fileID: 2728292468360604703, guid: adcaf21558317c14b9f97458dc8911ce, type: 3}
       propertyPath: m_LocalPosition.y
@@ -20300,7 +20706,6 @@ SceneRoots:
   - {fileID: 1653833602}
   - {fileID: 2024995856}
   - {fileID: 651375309}
-  - {fileID: 1124314842}
   - {fileID: 604203459}
   - {fileID: 779459778}
   - {fileID: 1513744467}
