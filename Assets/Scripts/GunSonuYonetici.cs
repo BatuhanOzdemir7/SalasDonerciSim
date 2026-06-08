@@ -1,15 +1,15 @@
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GunSonuYonetici : MonoBehaviour
 {
     public static GunSonuYonetici Instance;
 
     [Header("Zaman Ayarları (Vardiya Saniyeleri)")]
-    // Artık 3 günün süresini de direkt Unity arayüzünden değiştirebilirsin
-    public float gun1Suresi = 180f; // Deneme için 3 dakika
-    public float gun2Suresi = 420f; // 7 dakika
-    public float gun3Suresi = 300f; // 5 dakika
+    public float gun1Suresi = 180f;
+    public float gun2Suresi = 420f;
+    public float gun3Suresi = 300f;
 
     private float kalanSure;
     private bool gunDevamEdiyorMu = false;
@@ -69,7 +69,6 @@ public class GunSonuYonetici : MonoBehaviour
         }
     }
 
-    // YENİ: Süre sıfırlanırken hangi gündeysek o günün public değişkenini çekecek
     public void KalanSureyiSifirla()
     {
         if (mevcutGun == 1) kalanSure = gun1Suresi;
@@ -115,22 +114,68 @@ public class GunSonuYonetici : MonoBehaviour
         }
     }
 
+    private void DukkaniTemizle()
+    {
+        // 1. İçerideki tüm müşterileri anında yok et
+        MusteriAI[] musteriler = FindObjectsOfType<MusteriAI>();
+        foreach (MusteriAI musteri in musteriler)
+        {
+            Destroy(musteri.gameObject);
+        }
+
+        // 2. Hijyen skorunu tamamen sıfırla
+        if (HijyenYonetici.Instance != null)
+        {
+            HijyenYonetici.Instance.mevcutHijyen = 5.0f;
+            HijyenYonetici.Instance.dukkanCopSayisi = 0;
+        }
+
+        // 3. Oyuncuyu dükkanın başlangıç noktasına ışınla (Sahnede "BaslangicNoktasi" objesi olmalı)
+        GameObject oyuncu = GameObject.FindGameObjectWithTag("Player");
+        GameObject baslangic = GameObject.Find("BaslangicNoktasi");
+
+        if (oyuncu != null && baslangic != null)
+        {
+            CharacterController cc = oyuncu.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+
+            oyuncu.transform.position = baslangic.transform.position;
+            oyuncu.transform.rotation = baslangic.transform.rotation;
+
+            if (cc != null) cc.enabled = true;
+        }
+    }
+
+    // DEVAM BUTONUNA TIKLANINCA ÇALIŞACAK FONKSİYON
     public void SonrakiGuneGec()
     {
+        // 1. FİNAL UI İÇİN O GÜNÜN VERİLERİNİ HAFIZAYA KAYDET
+        if (KasaYonetici.Instance != null && HijyenYonetici.Instance != null)
+        {
+            PlayerPrefs.SetFloat("Gun" + mevcutGun + "_Ciro", KasaYonetici.Instance.toplamCiro);
+            PlayerPrefs.SetFloat("Gun" + mevcutGun + "_Memnuniyet", KasaYonetici.Instance.GetOrtalamaMemnuniyet());
+            PlayerPrefs.SetString("Gun" + mevcutGun + "_Hijyen", HijyenYonetici.Instance.guncelNot.ToString());
+        }
+
+        // 2. EĞER 3. GÜN BİTTİYSE OYUNU BİTİR (Sahneyi sıfırlama)
         if (mevcutGun >= 3)
         {
             Debug.Log("3 GÜNLÜK VARDİYA BİTTİ! OYUN KAZANILDI!");
+            // İleride buraya Final UI (3 günlük ortalama) panelini açan kodu ekleyeceğiz
             return;
         }
 
+        // 3. EĞER 3. GÜN DEĞİLSE SONRAKİ GÜNE GEÇ
         mevcutGun++;
 
-        if (gunSonuCanvas != null) gunSonuCanvas.SetActive(false);
+        // Sadece kaçıncı günde olduğumuzu hafızada tutuyoruz (Para vs yok)
+        PlayerPrefs.SetInt("KayitliGun", mevcutGun);
+        PlayerPrefs.Save();
+
+        // Zamanı normale döndür
         Time.timeScale = 1f;
 
-        // Yeni vardiyayı ve o günün ayarlı süresini başlat
-        KalanSureyiSifirla();
-
-        Debug.Log("Yeni vardiya başladı! Mevcut Gün: " + mevcutGun);
+        // SAHNEYİ BAŞTAN AŞAĞI SIFIRLA (Dükkan, hijyen, para her şey pırıl pırıl sıfırlanır)
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
