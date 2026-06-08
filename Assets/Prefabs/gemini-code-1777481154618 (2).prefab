@@ -721,7 +721,7 @@ PrefabInstance:
       addedObject: {fileID: -1770262942235580819}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: f390019280f955642b37d554e6e4dac2, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -3985414631603557150}
+      addedObject: {fileID: 4788117069632895285}
   m_SourcePrefab: {fileID: 100100000, guid: f390019280f955642b37d554e6e4dac2, type: 3}
 --- !u!4 &595662666557426087 stripped
 Transform:
@@ -799,7 +799,7 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &-3985414631603557150
+--- !u!114 &4788117069632895285
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -812,8 +812,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   suAnkiDurum: 0
-  sabirSuresi: 500
-  yemekYemeSuresi: 5
+  sabirSuresi: 60
+  yemekYemeSuresi: 10
+  memnuniyet: 100
   hedefSandalye: {fileID: 0}
   cikisNoktasi: {fileID: 0}
   yemekIkonu: {fileID: 3880600273167514723}
@@ -821,8 +822,8 @@ MonoBehaviour:
   donerResmi: {fileID: 21300000, guid: 205bd4821acb4664287f1a6af569fcdd, type: 3}
   icecekResimleri:
   - {fileID: 21300000, guid: a0c156c1bce38324f9162a23c002e650, type: 3}
-  - {fileID: 21300000, guid: 763e16f49fe95244392efb11e7019fd5, type: 3}
   - {fileID: 21300000, guid: 6d2a53ff16071834989edd8ba7737b99, type: 3}
-  siparisCanvas: {fileID: 0}
+  - {fileID: 21300000, guid: 763e16f49fe95244392efb11e7019fd5, type: 3}
+  siparisCanvas: {fileID: 8747165584696723131}
   etkilesimMesafesi: 3
   hizalamaHizi: 5

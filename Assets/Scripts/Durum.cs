@@ -3,6 +3,7 @@ using UnityEngine;
 public class Durum : MonoBehaviour
 {
     [Header("Dürüm İçeriği")]
+    public float donerMiktari = 0f;
     public int kullanilanDonerSayisi = 0;
     public bool sosKullanildiMi = false;
     public bool soganVarMi = false;

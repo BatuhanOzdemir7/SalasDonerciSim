@@ -21,10 +21,13 @@ public class MusteriAI : MonoBehaviour
     private GameObject benimFisim;
 
     [Header("Zamanlayýcýlar")]
-    public float sabirSuresi = 200f; // Ýstediðin uzun süre
+    public float sabirSuresi = 60f;
     private float sabirSayaci;
     public float yemekYemeSuresi = 10f;
     private float yemekSayaci;
+
+    [Header("Memnuniyet Sistemi")]
+    public float memnuniyet = 100f;
 
     [Header("Hedef Noktalarý")]
     public Transform hedefSandalye;
@@ -64,7 +67,6 @@ public class MusteriAI : MonoBehaviour
 
     void Update()
     {
-        // Navigasyon Kontrolü
         if (agent != null && agent.enabled && !agent.pathPending)
         {
             if (agent.remainingDistance <= agent.stoppingDistance)
@@ -80,7 +82,6 @@ public class MusteriAI : MonoBehaviour
             }
         }
 
-        // Masaya Hizalanma
         if (suAnkiDurum == MusteriDurumu.SiparisBekliyor || suAnkiDurum == MusteriDurumu.YemekYiyor)
         {
             if (hedefSandalye != null)
@@ -90,14 +91,12 @@ public class MusteriAI : MonoBehaviour
             }
         }
 
-        // Animasyon Hýzý
         if (musteriAnimator != null)
         {
             float anlikHiz = (agent != null && agent.enabled) ? agent.velocity.magnitude : 0f;
             musteriAnimator.SetFloat("Speed", anlikHiz);
         }
 
-        // E Tuþu Ýle Sipariþ Alma
         if (suAnkiDurum == MusteriDurumu.SiparisBekliyor && !siparisAlindiMi)
         {
             if (oyuncu != null && Vector3.Distance(transform.position, oyuncu.position) <= etkilesimMesafesi)
@@ -121,7 +120,21 @@ public class MusteriAI : MonoBehaviour
         {
             case MusteriDurumu.SiparisBekliyor:
                 sabirSayaci -= Time.deltaTime;
-                if (sabirSayaci <= 0) DurumDegistir(MusteriDurumu.Ayriliyor);
+
+                float gecenSure = sabirSuresi - sabirSayaci;
+                memnuniyet = 100f - (Mathf.Floor(gecenSure / 12f) * 20f);
+                memnuniyet = Mathf.Clamp(memnuniyet, 0f, 100f);
+
+                if (sabirSayaci <= 0)
+                {
+                    Debug.Log("<color=red>Müþteri: Sabrým bitti, yemek falan istemiyorum!</color>");
+
+                    // Zaman bittiði için otomatik 0 puan basýp gidiyor
+                    memnuniyet = 0f;
+                    if (KasaYonetici.Instance != null) KasaYonetici.Instance.MemnuniyetPuaniniIsle(memnuniyet);
+
+                    DurumDegistir(MusteriDurumu.Ayriliyor);
+                }
                 break;
 
             case MusteriDurumu.YemekYiyor:
@@ -143,14 +156,10 @@ public class MusteriAI : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // MÜÞTERÝNÝN DÜRÜMÜ DEÐERLENDÝRDÝÐÝ YER
-    // ==========================================
     public void TabagiDegerlendir(GameObject masayaKonanObje)
     {
         if (suAnkiDurum != MusteriDurumu.SiparisBekliyor || !siparisAlindiMi) return;
 
-        // Tepsinin içindeki senin yazdýðýn "Durum" scriptini arýyoruz
         Durum icindekiDurum = masayaKonanObje.GetComponentInChildren<Durum>(true);
 
         if (icindekiDurum == null)
@@ -159,22 +168,24 @@ public class MusteriAI : MonoBehaviour
             return;
         }
 
-        // Zehirli Et Kontrolü
         if (icindekiDurum.donerZehirliMi)
         {
             Debug.Log("Müþteri: Aaaðh! Bu et bozuk! Zehirlendim!");
+
+            // Zehirlenirse de 0 puaný gömüyoruz
+            memnuniyet = 0f;
+            if (KasaYonetici.Instance != null) KasaYonetici.Instance.MemnuniyetPuaniniIsle(memnuniyet);
+
             DurumDegistir(MusteriDurumu.Ayriliyor);
             return;
         }
 
         bool siparisDogruMu = true;
 
-        /* Dilersen bu raporu hata ayýklamak için ileride tekrar açabilirsin:
-        Debug.Log("MÜÞTERÝ ÝSTÝYOR -> Et: " + dilimSayisi + " | Turþu: " + tursuIsterMi + " | Marul: " + marulIsterMi + " | Soðan: " + soganIsterMi + " | Patates: " + patatesIsterMi);
-        Debug.Log("TEPSÝDEKÝ DÜRÜM -> Et: " + icindekiDurum.kullanilanDonerSayisi + " | Turþu: " + icindekiDurum.tursuVarMi + " | Marul: " + icindekiDurum.marulVarMi + " | Soðan: " + icindekiDurum.soganVarMi + " | Patates: " + icindekiDurum.patatesVarMi);
-        */
+        // Bol Kepçe Kontrolü
+        if (icindekiDurum.kullanilanDonerSayisi < dilimSayisi) siparisDogruMu = false;
 
-        if (icindekiDurum.kullanilanDonerSayisi != dilimSayisi) siparisDogruMu = false;
+        // Malzeme Kontrolleri
         if (tursuIsterMi != icindekiDurum.tursuVarMi) siparisDogruMu = false;
         if (marulIsterMi != icindekiDurum.marulVarMi) siparisDogruMu = false;
         if (soganIsterMi != icindekiDurum.soganVarMi) siparisDogruMu = false;
@@ -182,9 +193,13 @@ public class MusteriAI : MonoBehaviour
 
         if (siparisDogruMu)
         {
-            Debug.Log("Müþteri: Sipariþim doðru, baþlýyorum!");
+            Debug.Log("<color=green>Müþteri: Sipariþim doðru, eline saðlýk usta!</color>");
 
-            // Masadaki tepsinin fiziðini kapatýyoruz ki oyuncu geri çalmasýn
+            if (KasaYonetici.Instance != null)
+            {
+                KasaYonetici.Instance.MemnuniyetPuaniniIsle(memnuniyet);
+            }
+
             Collider objeCol = masayaKonanObje.GetComponent<Collider>();
             if (objeCol != null) objeCol.enabled = false;
 
@@ -192,7 +207,19 @@ public class MusteriAI : MonoBehaviour
         }
         else
         {
-            Debug.Log("Müþteri: Yanlýþ dürüm sarmýþsýn usta!");
+            // ==========================================================
+            // ÝÞTE ÝSTEDÝÐÝN CEZA GÜNCELLEMESÝ BURADA
+            // Yanlýþ sipariþte memnuniyet anýnda 0 olur ve kasaya iþlenir!
+            // ==========================================================
+            Debug.Log("<color=red>Müþteri: Yanlýþ veya eksik dürüm sarmýþsýn usta! Memnuniyet %0, kalkýp gidiyorum.</color>");
+
+            memnuniyet = 0f;
+            if (KasaYonetici.Instance != null)
+            {
+                KasaYonetici.Instance.MemnuniyetPuaniniIsle(memnuniyet); // Sað üstteki ortalamayý fena vuracak
+            }
+
+            DurumDegistir(MusteriDurumu.Ayriliyor);
         }
     }
 
@@ -270,14 +297,9 @@ public class MusteriAI : MonoBehaviour
         }
     }
 
-    // ==========================================
-    // KASADAN HESAP ALINDIÐINDA ÇALIÞIR
-    // ==========================================
     public void OdemeYapVeGit()
     {
         Debug.Log("Müþteri: Yemeði yedim, hesabý da ödedim. Kolay gelsin usta!");
-
-        // Müþteri parasýný verdikten sonra Ayrýlýyor durumuna geçer ve çýkýþa yürür
         DurumDegistir(MusteriDurumu.Ayriliyor);
     }
 }

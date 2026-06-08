@@ -823,8 +823,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   suAnkiDurum: 0
-  sabirSuresi: 500
+  sabirSuresi: 60
   yemekYemeSuresi: 5
+  memnuniyet: 100
   hedefSandalye: {fileID: 0}
   cikisNoktasi: {fileID: 0}
   yemekIkonu: {fileID: 1367113783312952919}

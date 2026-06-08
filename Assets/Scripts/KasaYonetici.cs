@@ -11,7 +11,25 @@ public class KasaYonetici : MonoBehaviour, IInteractable
     public float toplamCiro = 0f;       // Kasadaki toplam paramýz
     public float durumFiyati = 150f;    // Standart menü fiyatý (Ýstersen Inspector'dan deðiþtirebilirsin)
     public TMP_Text ciroYazisi;         // Ekranda sað üstte duracak o yazý
+    [Header("Memnuniyet Sistemi")]
+    public TMP_Text memnuniyetYazisi;
+    private float toplamMemnuniyet = 0f;
+    private int hizmetAlanMusteriSayisi = 0;
 
+    // Bu fonksiyonu scriptin en altýna, diðer fonksiyonlarýn yanýna ekle
+    public void MemnuniyetPuaniniIsle(float musteriPuani)
+    {
+        toplamMemnuniyet += musteriPuani;
+        hizmetAlanMusteriSayisi++;
+
+        // Ortalamayý hesapla (Örn: 100 + 80 / 2 = 90)
+        float ortalama = toplamMemnuniyet / hizmetAlanMusteriSayisi;
+
+        if (memnuniyetYazisi != null)
+        {
+            memnuniyetYazisi.text = "%" + Mathf.RoundToInt(ortalama).ToString();
+        }
+    }
     // Kasadaki kuyruk yapýsý
     private Queue<MusteriAI> kasaKuyrugu = new Queue<MusteriAI>();
 
@@ -65,7 +83,8 @@ public class KasaYonetici : MonoBehaviour, IInteractable
         int index = 0;
         foreach (var musteri in kasaKuyrugu)
         {
-            Vector3 yeniPozisyon = kasaBeklemeNoktasi.position - (kasaBeklemeNoktasi.forward * (index * 1.2f));
+            // BURADAKÝ 1.2f DEÐERÝNÝ 0.8f (VEYA 0.7f) YAPARAK MÜÞTERÝLERÝ SIKIÞTIR
+            Vector3 yeniPozisyon = kasaBeklemeNoktasi.position - (kasaBeklemeNoktasi.forward * (index * 0.8f));
             musteri.NavigasyonHedefiVer(yeniPozisyon);
             index++;
         }
