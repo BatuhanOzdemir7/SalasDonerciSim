@@ -3011,7 +3011,7 @@ MonoBehaviour:
   dolapKapagi: {fileID: 1329391218}
   acikAci: -90
   dolapMenusuCanvas: {fileID: 1290515954}
-  kapanmaMesafesi: 4
+  kapanmaMesafesi: 1.5
   marulPrefab: {fileID: 748130103}
   tursuPrefab: {fileID: 1453311963}
   soganPrefab: {fileID: 962469907}
@@ -4658,7 +4658,7 @@ MonoBehaviour:
   dolapKapagi: {fileID: 559027508}
   acikAci: 90
   "\u0130cecek_Menusu": {fileID: 274482710}
-  kapanmaMesafesi: 4
+  kapanmaMesafesi: 1.5
   ayranPrefab: {fileID: 1484772330480045332, guid: bf72e2b55a814304992597c74398e19c, type: 3}
   suPrefab: {fileID: 2065283815077802984, guid: b9b05a2498a875e409b061158b718048, type: 3}
   kolaPrefab: {fileID: 8460815518432165310, guid: bb7e463bfbfa96246984fea97b206f0b, type: 3}
@@ -16681,7 +16681,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.0036458336, y: 0.875768}
   m_AnchorMax: {x: 0.0036458336, y: 0.875768}
-  m_AnchoredPosition: {x: 93.5924, y: 25.7338}
+  m_AnchoredPosition: {x: 93.59241, y: 25.733826}
   m_SizeDelta: {x: 153.1848, y: 53.4677}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1764351199
