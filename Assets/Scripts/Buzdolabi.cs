@@ -13,7 +13,7 @@ public class Buzdolabi : MonoBehaviour, IInteractable
     public GameObject dolapMenusuCanvas;
     private OyuncuEnvanter islemYapanOyuncu;
 
-    public float kapanmaMesafesi = 4f;
+    public float kapanmaMesafesi = 1.5f;
 
     [Header("Malzeme Prefablarý")]
     public GameObject marulPrefab;

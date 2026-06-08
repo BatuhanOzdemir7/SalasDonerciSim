@@ -13,7 +13,7 @@ public class İcecekDolabi : MonoBehaviour, IInteractable
     public GameObject İcecek_Menusu;
     private OyuncuEnvanter islemYapanOyuncu;
 
-    public float kapanmaMesafesi = 4f;
+    public float kapanmaMesafesi = 1.5f;
 
     [Header("Malzeme Prefabları")]
     public GameObject ayranPrefab;
