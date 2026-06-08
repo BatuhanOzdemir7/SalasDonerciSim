@@ -3012,7 +3012,7 @@ MonoBehaviour:
   dolapKapagi: {fileID: 1329391218}
   acikAci: -90
   dolapMenusuCanvas: {fileID: 1290515954}
-  kapanmaMesafesi: 4
+  kapanmaMesafesi: 1.5
   marulPrefab: {fileID: 748130103}
   tursuPrefab: {fileID: 1453311963}
   soganPrefab: {fileID: 962469907}
@@ -4718,7 +4718,7 @@ MonoBehaviour:
   dolapKapagi: {fileID: 559027508}
   acikAci: 90
   "\u0130cecek_Menusu": {fileID: 274482710}
-  kapanmaMesafesi: 4
+  kapanmaMesafesi: 1.5
   ayranPrefab: {fileID: 1484772330480045332, guid: bf72e2b55a814304992597c74398e19c, type: 3}
   suPrefab: {fileID: 2065283815077802984, guid: b9b05a2498a875e409b061158b718048, type: 3}
   kolaPrefab: {fileID: 8460815518432165310, guid: bb7e463bfbfa96246984fea97b206f0b, type: 3}
