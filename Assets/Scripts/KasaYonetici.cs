@@ -15,6 +15,12 @@ public class KasaYonetici : MonoBehaviour, IInteractable
     public TMP_Text memnuniyetYazisi;
     private float toplamMemnuniyet = 0f;
     private int hizmetAlanMusteriSayisi = 0;
+    public float GetOrtalamaMemnuniyet()
+    {
+        // O gün hiç müþteri gelmediyse 0'a bölünme hatasý almamak için 100 döndürüyoruz
+        if (hizmetAlanMusteriSayisi == 0) return 100f;
+        return toplamMemnuniyet / hizmetAlanMusteriSayisi;
+    }
 
     // Bu fonksiyonu scriptin en altýna, diðer fonksiyonlarýn yanýna ekle
     public void MemnuniyetPuaniniIsle(float musteriPuani)

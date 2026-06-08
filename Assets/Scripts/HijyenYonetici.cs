@@ -2,6 +2,15 @@
 
 public class HijyenYonetici : MonoBehaviour
 {
+
+
+    public static HijyenYonetici Instance;
+
+    void Awake()
+    {
+        if (Instance == null) Instance = this;
+    }
+
     [Header("Hijyen Ayarları (0.0 - 5.0 Arası)")]
     public float mevcutHijyen = 5.0f;
     public float saniyelikKirlenmeHizi = 0.02f; // Kendi kendine düşme hızı

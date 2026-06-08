@@ -171,10 +171,12 @@ public class MusteriAI : MonoBehaviour
         if (icindekiDurum.donerZehirliMi)
         {
             Debug.Log("Müþteri: Aaaðh! Bu et bozuk! Zehirlendim!");
-
-            // Zehirlenirse de 0 puaný gömüyoruz
+            // Zehirlenirse de 0 puan veriyoruz
             memnuniyet = 0f;
             if (KasaYonetici.Instance != null) KasaYonetici.Instance.MemnuniyetPuaniniIsle(memnuniyet);
+
+            // YENÝ EKLENEN SATIR: Müþteri zehirlendiðinde hijyen skoru da doðrudan 1 puan düþsün
+            if (HijyenYonetici.Instance != null) HijyenYonetici.Instance.mevcutHijyen -= 1.0f;
 
             DurumDegistir(MusteriDurumu.Ayriliyor);
             return;
