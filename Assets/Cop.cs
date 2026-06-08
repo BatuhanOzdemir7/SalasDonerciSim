@@ -20,7 +20,7 @@ public class Cop : MonoBehaviour
     // Paspasla bu çöpü sildiğimizde (Destroy edildiğinde) bu fonksiyon OTOMATİK çalışır
     void OnDestroy()
     {
-        if (hijyenYonetici != null)
+        if (hijyenYonetici != null) 
         {
             hijyenYonetici.dukkanCopSayisi--; // Çöp silindi, dükkan biraz rahatladı
         }
