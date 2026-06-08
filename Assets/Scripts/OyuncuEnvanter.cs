@@ -65,71 +65,30 @@ public class OyuncuEnvanter : MonoBehaviour
     }
 
     void FTusuAksiyonu()
-
     {
-
         if (isinCikisNoktasi == null) return;
 
-
-
         RaycastHit hit;
-
-        // Önümüzde etkileþime geçebileceðimiz bir nesne (Tencere, Kepçe Standý, Dolap vs.) var mý?
-
+        // Önümüzde etkileþime geçebileceðimiz bir nesne (Tencere, Çöp, Masa vs.) var mý?
         if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
-
         {
-
             IInteractable etkilesimliObje = hit.collider.GetComponentInParent<IInteractable>();
-
             if (etkilesimliObje != null)
-
             {
-
                 // Eðer etkileþimli bir nesne varsa onu çalýþtýr 
-
-                // (Eðer bakýlan yer TepsiBirakmaNoktasi ise tepsi oraya kilitlenecektir)
-
                 etkilesimliObje.Interact(this);
-
                 return; // Etkileþim gerçekleþtiði için býrakma mantýðýna geçme, burada fonksiyonu bitir.
-
             }
-
         }
 
-
-
-        // AKILLI DÜÞÜÞ GÜNCELLEMESÝ: Eðer önümüzde etkileþime geçecek HÝÇBÝR ÞEY yoksa VE elimiz doluysa...
-
+        // AKILLI DÜÞÜÞ GÜNCELLEMESÝ V2: Eðer önümüzde etkileþime geçecek HÝÇBÝR ÞEY yoksa VE elimiz doluysa...
         if (eldeTutulanObje != null)
-
         {
-
-            Tray eldekiTepsi = GetHeldTray();
-
-
-
-            // KONTROL: Eðer elimizde tuttuðumuz obje bir TEPSÝ ise, boþluða býrakmayý tamamen engelle.
-
-            if (eldekiTepsi != null)
-
-            {
-
-                Debug.Log("Uyarý: Tepsiyi sadece uygun istasyonlara býrakabilirsiniz!");
-
-                return; // Fonksiyonu burada durdur, tepsiyi havada býrakma.
-
-            }
-
-
-
-            // Eðer elimizdeki obje tepsi DEÐÝLSE (lavaþ, domates, kola vs.), eski mantýkla yere/tezgaha býrakmasýna izin ver.
-
-            EldenBirak();
-
+            // Önceden sadece tepsiyi engelliyordu, artýk Malzeme, Býçak ve Kepçe dahil HÝÇBÝR ÞEYÝN
+            // boþlukta F'ye basýlarak yere/havaya atýlmasýna izin vermiyoruz.
+            Debug.Log("Uyarý: Elindeki eþyayý boþluða býrakamazsýn! Uygun bir istasyona veya çöpe atmalýsýn.");
+            return;
         }
-
     }
 
 
