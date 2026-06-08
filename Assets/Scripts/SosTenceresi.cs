@@ -11,7 +11,7 @@ public class SosTenceresi : MonoBehaviour, IInteractable
         Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
 
         // 1. KEPÇE ALMA MANTIĞI
-        if (eldekiMalzeme == null && icindekiKepce != null)
+        if (eldekiMalzeme == null && oyuncu.GetHeldTray() == null && !oyuncu.bicakVarMi && icindekiKepce != null)
         {
             // Kepçeyi oyuncuya ver
             oyuncu.PickUpItem(icindekiKepce);

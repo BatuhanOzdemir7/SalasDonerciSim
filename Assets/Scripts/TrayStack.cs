@@ -83,7 +83,7 @@ public class TrayStack : MonoBehaviour, IInteractable
         }
 
         // DURUM 2: Oyuncunun Eli Tamamen Boþsa (Yýðýndan tepsi al)
-        if (eldekiTepsi == null && !oyuncu.bicakVarMi)
+        if (eldekiTepsi == null && !oyuncu.bicakVarMi && oyuncu.GetHeldMalzeme() == null)
         {
             if (mevcutTepsiSayisi > 0)
             {

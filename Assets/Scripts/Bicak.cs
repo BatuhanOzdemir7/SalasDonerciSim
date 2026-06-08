@@ -6,9 +6,10 @@ public class Bicak : MonoBehaviour, IInteractable
 
     public void Interact(OyuncuEnvanter oyuncu)
     {
-        if (oyuncu.GetHeldTray() != null)
+        // GÜNCELLENEN KISIM: Hem tepsi hem malzeme kontrolü yapılıyor
+        if (oyuncu.GetHeldTray() != null || oyuncu.GetHeldMalzeme() != null)
         {
-            Debug.Log("Bıçağı almak için önce elindeki tepsiyi tezgaha bırak!");
+            Debug.Log("Bıçağı almak için önce elindeki eşyayı tezgaha bırak!");
             return;
         }
 

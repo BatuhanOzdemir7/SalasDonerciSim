@@ -51,7 +51,7 @@ public class Fritoz : MonoBehaviour, IInteractable
     public void Interact(OyuncuEnvanter oyuncu)
     {
         Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
-        bool elBosMu = (eldekiMalzeme == null && oyuncu.GetHeldTray() == null);
+        bool elBosMu = (eldekiMalzeme == null && oyuncu.GetHeldTray() == null && !oyuncu.bicakVarMi);
 
         // 1. DURUM: ELLER DOLUYKEN PATATES KOYMA
         if (eldekiMalzeme != null && eldekiMalzeme.name.Contains("CigPatates"))
