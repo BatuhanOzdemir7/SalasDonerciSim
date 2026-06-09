@@ -103,13 +103,14 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // DÝNAMÝK YAZI KONTROLÜ
+        // 4. DÝNAMÝK YAZI KONTROLÜ
         if (oyuncuYakindaMi && !kesimYapiliyorMu)
         {
             if (eTusuYazisi != null)
             {
                 eTusuYazisi.gameObject.SetActive(true);
-                if (elindeTavukVarMi) eTusuYazisi.text = "Çið Tavuðu Takmak Ýçin E'ye Bas";
+                // Yazýyý da F olarak düzelttik
+                if (elindeTavukVarMi) eTusuYazisi.text = "Çið Tavuðu Takmak Ýçin F'ye Bas";
                 else if (donerSogukMu && !makineAcikMi) eTusuYazisi.text = "Döneri Isýtmak Ýçin E'ye Bas";
                 else if (makineAcikMi) eTusuYazisi.text = "Makineyi Kapatmak Ýçin E'ye Bas\n(Kesmek Ýçin F'ye Bas)";
                 else eTusuYazisi.text = "Makineyi Açmak Ýçin E'ye Bas";
@@ -120,43 +121,24 @@ public class DonerMakinesi : MonoBehaviour
             if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
         }
 
-        // STANDART: E TUÞU (Taþýma, Takma, Açma, Kapatma)
+        // 5. SADECE E TUÞU KONTROLÜ (MAKÝNE AÇ/KAPAT/ISIT)
         if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.E))
         {
-            if (elindeTavukVarMi)
+            // Tavuk takma olayýný buradan tamamen sildik. E tuþu sadece makineyi yönetir.
+            if (donerSogukMu && !makineAcikMi)
             {
-                if (kalanYaprakSayisi > 0 && kalanYaprakSayisi < maxYaprakSayisi)
-                {
-                    donereCigTavukEklendiMi = true;
-                    Debug.Log("<color=red><b>[ÇAPRAZ BULAÞMA]:</b> Bitmemiþ dönerin üstüne çið tavuk basýldý!</color>");
-                }
-                else
-                {
-                    donereCigTavukEklendiMi = false;
-                    Debug.Log("[OCAK]: Boþ ocaða yeni, temiz çið tavuk takýldý.");
-                }
-
-                kalanYaprakSayisi = maxYaprakSayisi;
-                DurumuGuncelle(DonerDurumu.Cig);
-
-                if (makineyeYakinOyuncu != null) makineyeYakinOyuncu.EldenBirakVeSil();
-                if (donerEtiRenderer != null) donerEtiRenderer.enabled = true;
+                if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
+                isiniyorMu = true;
+                if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(true);
             }
             else
             {
-                if (donerSogukMu && !makineAcikMi)
-                {
-                    if (eTusuYazisi != null) eTusuYazisi.gameObject.SetActive(false);
-                    isiniyorMu = true;
-                    if (isinmaArayuzObjesi != null) isinmaArayuzObjesi.SetActive(true);
-                }
-                else
-                {
-                    makineAcikMi = !makineAcikMi;
-                }
+                makineAcikMi = !makineAcikMi;
             }
         }
 
+        // 6. DÖNME, PÝÞME ve SOÐUMA 
+        // (Burasý senin kodundakiyle tamamen ayný kalacak, elleme)
         if (makineAcikMi && kalanYaprakSayisi > 0)
         {
             if (donerAnimator != null) donerAnimator.SetBool("isSpinning", true);
@@ -182,27 +164,54 @@ public class DonerMakinesi : MonoBehaviour
             if (sogumaSayaci >= sogumaSiniri) donerSogukMu = true;
         }
 
+        // 7. F TUÞU MANTIÐI (TAVUK TAKMA VE DÖNER KESME)
 
-        // --- 7. F TUÞU (Basýlý Tutma Mantýðý) ---
-        // Artýk "Toggle" (aç/kapat) deðil, "Hold" (basýlý tut) mantýðýna geçiyoruz.
-        if (oyuncuYakindaMi && Input.GetKey(KeyCode.F)) // GetKeyDown yerine GetKey
+        // A) Tavuk Takma (Tek Basýþ)
+        if (oyuncuYakindaMi && Input.GetKeyDown(KeyCode.F))
+        {
+            if (elindeTavukVarMi)
+            {
+                if (kalanYaprakSayisi > 0 && kalanYaprakSayisi < maxYaprakSayisi)
+                {
+                    donereCigTavukEklendiMi = true;
+                    Debug.Log("<color=red><b>[ÇAPRAZ BULAÞMA]:</b> Bitmemiþ dönerin üstüne çið tavuk basýldý!</color>");
+                }
+                else
+                {
+                    donereCigTavukEklendiMi = false;
+                    Debug.Log("[OCAK]: Boþ ocaða yeni, temiz çið tavuk takýldý.");
+                }
+
+                kalanYaprakSayisi = maxYaprakSayisi;
+                DurumuGuncelle(DonerDurumu.Cig);
+
+                if (makineyeYakinOyuncu != null) makineyeYakinOyuncu.EldenBirakVeSil();
+                if (donerEtiRenderer != null) donerEtiRenderer.enabled = true;
+            }
+        }
+
+        // B) Döner Kesme (Basýlý Tutma)
+        if (oyuncuYakindaMi && Input.GetKey(KeyCode.F) && !elindeTavukVarMi) // Elinde tavuk yoksa kesmeye baþlar
         {
             if (kalanYaprakSayisi > 0 && makineyeYakinOyuncu != null && makineyeYakinOyuncu.bicakVarMi)
             {
-                kesimYapiliyorMu = true; // Basýlý tuttuðun sürece true kalsýn
+                kesimYapiliyorMu = true;
                 if (makineyeYakinOyuncu.oyuncuAnimator != null)
                 {
                     makineyeYakinOyuncu.oyuncuAnimator.SetBool("isCutting", true);
                 }
             }
         }
-        else // F tuþunu býraktýðýn anda
+        else if (!Input.GetKey(KeyCode.F)) // F tuþunu býraktýðýn anda
         {
-            if (kesimYapiliyorMu) // Eðer kesiyorsak
+            if (kesimYapiliyorMu)
             {
-                DurdurKesimveAnimasyon(); // Kesimi durdur
+                DurdurKesimveAnimasyon();
             }
         }
+
+        // 8. OTOMATÝK KESÝM
+        // (Burasý senin kodundakiyle tamamen ayný kalacak)
 
         // --- 8. OTOMATÝK KESME (Basýlý Tutmaya Göre) ---
         if (kesimYapiliyorMu)

@@ -49,16 +49,11 @@ public class OyuncuEnvanter : MonoBehaviour
             }
         }
 
-        // AKILLI DÜÞÜÞ
+        // AKILLI DÜÞÜÞ DÜZELTMESÝ: Boþluða bakýyorsan eþyayý YERE ATMA!
         if (eldeTutulanObje != null)
         {
-            Tray eldekiTepsi = GetHeldTray();
-            if (eldekiTepsi != null)
-            {
-                Debug.Log("Uyarý: Tepsiyi sadece uygun istasyonlara býrakabilirsiniz!");
-                return;
-            }
-            EldenBirak();
+            Debug.Log("Uyarý: Elindeki eþyayý boþluða býrakamazsýn! Uygun bir istasyona veya çöpe atmalýsýn.");
+            return; // EldenBirak() kodunu sildik, artýk yere fýrlatmayacak.
         }
     }
 
