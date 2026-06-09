@@ -17,14 +17,18 @@ public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
 
     public void Interact(OyuncuEnvanter oyuncu)
     {
+        // Lazerin hangi tuþtan geldiðini tespit ediyoruz
+        bool fTusunaBasildiMi = Input.GetKey(KeyCode.F) || Input.GetKeyDown(KeyCode.F);
+
         if (ustundekiTepsi == null)
         {
-            Tray eldekiTepsi = oyuncu.GetHeldTray();
+            // FÝLTRE 3: F tuþuna basýldýysa boþ istasyona tepsiyi "koyma". Tepsi sadece E ile konur!
+            if (fTusunaBasildiMi) return;
 
+            Tray eldekiTepsi = oyuncu.GetHeldTray();
             if (eldekiTepsi != null)
             {
                 ustundekiTepsi = eldekiTepsi;
-
                 ustundekiTepsi.transform.SetParent(null);
                 ustundekiTepsi.transform.position = tepsininDuracagiYer.position;
                 ustundekiTepsi.transform.rotation = tepsininDuracagiYer.rotation;
@@ -41,16 +45,16 @@ public class TepsiBirakmaNoktasi : MonoBehaviour, IInteractable
         else
         {
             Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
-            bool qTusunaBasildiMi = Input.GetKey(KeyCode.Q) || Input.GetKeyDown(KeyCode.Q);
 
-            // KÖPRÜ: Lazer masaya çarpsa bile dürüm sarma/malzeme koyma iþlemini tepsiye yönlendir
-            if (qTusunaBasildiMi || eldekiMalzeme != null)
+            // Eðer F'ye basýldýysa VEYA elde malzeme varsa doðrudan Dürüm (Ýþlem) mantýðýna geç
+            if (fTusunaBasildiMi || eldekiMalzeme != null)
             {
                 ustundekiTepsi.Interact(oyuncu);
-                SayaciGuncelle();   
+                SayaciGuncelle();
                 return;
             }
 
+            // Eðer E'ye basýldýysa ve eller tamamen boþsa Tepsiyi Geri Al
             if (oyuncu.GetHeldTray() == null && !oyuncu.bicakVarMi && eldekiMalzeme == null)
             {
                 oyuncu.PickUpItem(ustundekiTepsi.gameObject);

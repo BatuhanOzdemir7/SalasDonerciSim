@@ -6726,7 +6726,7 @@ BoxCollider:
   m_LayerOverridePriority: 0
   m_IsTrigger: 1
   m_ProvidesContacts: 0
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.45060182, y: 0.2664188, z: 0.18692599}
   m_Center: {x: 0, y: 0.1332094, z: 0.006014441}
@@ -17498,7 +17498,7 @@ PrefabInstance:
       objectReference: {fileID: 354909136}
     - target: {fileID: 6900857552815362028, guid: b342557fc6abbd84a9f592f64880f219, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6900857552815362028, guid: b342557fc6abbd84a9f592f64880f219, type: 3}
       propertyPath: saniyelikKirlenmeHizi
