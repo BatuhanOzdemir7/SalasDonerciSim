@@ -26,7 +26,7 @@ public class MusteriAI : MonoBehaviour
     public float odenecekTutar = 0f; // Müþterinin kasada ödeyeceði dinamik tutar
 
     [Header("Memnuniyet Sistemi")]
-    public float memnuniyet = 100f;
+    public float memnuniyet = 50f;
 
     [Header("Hedef Noktalar")]
     public Transform hedefSandalye;
@@ -44,6 +44,7 @@ public class MusteriAI : MonoBehaviour
     private NavMeshAgent agent;
     private Animator musteriAnimator;
     private bool hedefeUlasildiMi = false;
+    private Tray onumdekiTepsi;
 
     [Header("Oturma Ayarlarý")]
     public float hizalamaHizi = 5f;
@@ -117,20 +118,41 @@ public class MusteriAI : MonoBehaviour
                 // Müþteri masaya oturduðu andan itibaren sayar
                 beklemeSuresi += Time.deltaTime;
 
-                // 100 Saniye Aþýmý (Akýþ Þemasýndaki ">100 saniye" koþulu)
+                // 100 Saniye Aþýmý
                 if (beklemeSuresi > 100f)
                 {
                     Debug.Log("<color=red>Müþteri: 100 saniyeden fazla bekledim, dükkaný terk ediyorum!</color>");
 
-                    // Þemadaki "memn += -15" kuralý (100 taban puan üzerinden ortalamaya yansýtýyoruz)
-                    if (KasaYonetici.Instance != null) KasaYonetici.Instance.MemnuniyetPuaniniIsle(-15f);
+                    if (KasaYonetici.Instance != null)
+                    {
+                        // Doðrudan -15 deðerini ana puandan düþmek üzere yolluyoruz
+                        KasaYonetici.Instance.MemnuniyetPuaniniIsle(-15f);
+                    }
 
                     DurumDegistir(MusteriDurumu.Ayriliyor);
                 }
                 break;
             case MusteriDurumu.YemekYiyor:
                 yemekSayaci -= Time.deltaTime;
-                if (yemekSayaci <= 0) DurumDegistir(MusteriDurumu.KasayaGidiyor);
+
+                if (yemekSayaci <= 0)
+                {
+                    if (onumdekiTepsi != null)
+                    {
+                        // Tepsiyi içindekilerden arýndýr
+                        onumdekiTepsi.TepsiyiSifirla();
+
+                        // Oyuncu tekrar alabilsin diye fiziðini (Collider) aç
+                        Collider col = onumdekiTepsi.GetComponent<Collider>();
+                        if (col != null) col.enabled = true;
+
+                        // Müþterinin hafýzasýndan tepsiyi sil
+                        onumdekiTepsi = null;
+                    }
+
+                    // EKSÝK OLAN SATIR BURASI: Temizlik bittikten sonra müþteriyi kasaya yolla!
+                    DurumDegistir(MusteriDurumu.KasayaGidiyor);
+                }
                 break;
         }
     }
@@ -159,11 +181,8 @@ public class MusteriAI : MonoBehaviour
 
         if (icindekiDurum.donerZehirliMi)
         {
-            Debug.Log("Müþteri: Aaaðh! Bu et bozuk! Zehirlendim!");
-            if (KasaYonetici.Instance != null) KasaYonetici.Instance.MemnuniyetPuaniniIsle(-15f);
+            Debug.Log("Müþteri zehirli et yedi! Hijyen puaný düþtü ama yemeðe devam ediyor.");
             if (HijyenYonetici.Instance != null) HijyenYonetici.Instance.mevcutHijyen -= 1.0f;
-            DurumDegistir(MusteriDurumu.Ayriliyor);
-            return;
         }
 
         bool siparisDogruMu = true;
@@ -211,16 +230,18 @@ public class MusteriAI : MonoBehaviour
         // Kasa Yöneticisine gönderilecek verilerin iþlenmesi
         if (KasaYonetici.Instance != null)
         {
-            // Fiyatý müþterinin kendi deðiþkenine kaydediyoruz (Kasaya gidince bu tutarý ödeyecek)
             odenecekTutar = KasaYonetici.Instance.durumFiyati * paraCarpani;
 
-            // Taban memnuniyet (100) üzerine þemadaki artý/eksi deðeri ekleyip ortalama sistemine yolluyoruz
-            KasaYonetici.Instance.MemnuniyetPuaniniIsle(100f + eklenecekMemnuniyet);
+            // Doðrudan þemadaki +10, -5 gibi deðerleri yolluyoruz (50 falan eklemek yok)
+            KasaYonetici.Instance.MemnuniyetPuaniniIsle(eklenecekMemnuniyet);
         }
 
         Collider objeCol = masayaKonanObje.GetComponent<Collider>();
         if (objeCol != null) objeCol.enabled = false;
 
+        // Masaya konan objeden Tray scriptini bulup hafýzaya alýyoruz
+        onumdekiTepsi = masayaKonanObje.GetComponent<Tray>();
+        if (onumdekiTepsi == null) onumdekiTepsi = masayaKonanObje.GetComponentInChildren<Tray>();
         DurumDegistir(MusteriDurumu.YemekYiyor);
     }
 

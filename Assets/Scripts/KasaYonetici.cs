@@ -9,30 +9,30 @@ public class KasaYonetici : MonoBehaviour, IInteractable
 
     [Header("Para Sistemi")]
     public float toplamCiro = 0f;
-    public float durumFiyati = 150f;    // Taban menü fiyatý (Müþteri çarpaný bunun üzerinden hesaplar)
+    public float durumFiyati = 150f;
     public TMP_Text ciroYazisi;
 
     [Header("Memnuniyet Sistemi")]
     public TMP_Text memnuniyetYazisi;
-    private float toplamMemnuniyet = 0f;
-    private int hizmetAlanMusteriSayisi = 0;
+    public float genelMemnuniyet = 50f; // Dükkanýn puaný 50'den baþlar
 
+    // Diðer scriptler hata vermesin diye ismini deðiþtirmedik ama direkt ana puaný yollar
     public float GetOrtalamaMemnuniyet()
     {
-        if (hizmetAlanMusteriSayisi == 0) return 100f;
-        return toplamMemnuniyet / hizmetAlanMusteriSayisi;
+        return genelMemnuniyet;
     }
 
-    public void MemnuniyetPuaniniIsle(float musteriPuani)
+    public void MemnuniyetPuaniniIsle(float degisimMiktari)
     {
-        toplamMemnuniyet += musteriPuani;
-        hizmetAlanMusteriSayisi++;
+        // Gelen -5, +10 gibi deðerleri doðrudan ana puana ekliyoruz
+        genelMemnuniyet += degisimMiktari;
 
-        float ortalama = toplamMemnuniyet / hizmetAlanMusteriSayisi;
+        // Puanýn 0'ýn altýna düþmesini veya 100'ü geçmesini engelliyoruz
+        genelMemnuniyet = Mathf.Clamp(genelMemnuniyet, 0f, 100f);
 
         if (memnuniyetYazisi != null)
         {
-            memnuniyetYazisi.text = "%" + Mathf.RoundToInt(ortalama).ToString();
+            memnuniyetYazisi.text = "%" + Mathf.RoundToInt(genelMemnuniyet).ToString();
         }
     }
 
@@ -46,6 +46,8 @@ public class KasaYonetici : MonoBehaviour, IInteractable
     void Start()
     {
         CiroYazisiniGuncelle();
+        // Oyun baþlarken ekranda %50 yazsýn
+        MemnuniyetPuaniniIsle(0f);
     }
 
     public void Interact(OyuncuEnvanter oyuncu)
@@ -65,7 +67,6 @@ public class KasaYonetici : MonoBehaviour, IInteractable
         {
             MusteriAI siradakiMusteri = kasaKuyrugu.Dequeue();
 
-            // Müþterinin kalitesine göre hesaplanan kendi tutarýný alýyoruz
             float alinacakHesap = siradakiMusteri.odenecekTutar;
 
             siradakiMusteri.OdemeYapVeGit();
