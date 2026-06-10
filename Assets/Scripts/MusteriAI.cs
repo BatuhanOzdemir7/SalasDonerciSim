@@ -13,6 +13,7 @@ public class MusteriAI : MonoBehaviour
     private bool marulIsterMi;
     private bool soganIsterMi;
     private bool patatesIsterMi;
+    private bool sosIsterMi; // EKLENDÝ: Müþteri sos istiyor mu?
     private string secilenIcecekAdi;
     private int dilimSayisi;
 
@@ -23,7 +24,7 @@ public class MusteriAI : MonoBehaviour
     public float beklemeSuresi = 0f;
     public float yemekYemeSuresi = 10f;
     private float yemekSayaci;
-    public float odenecekTutar = 0f; // Müþterinin kasada ödeyeceði dinamik tutar
+    public float odenecekTutar = 0f;
 
     [Header("Memnuniyet Sistemi")]
     public float memnuniyet = 50f;
@@ -33,6 +34,7 @@ public class MusteriAI : MonoBehaviour
     public Transform cikisNoktasi;
 
     [Header("UI ve Etkileþim")]
+    public TMPro.TextMeshProUGUI baloncukYazisi; // Unity'den az önce oluþturduðun yazýyý buraya sürükleyeceksin
     public Image yemekIkonu;
     public Image icecekIkonu;
     public Sprite donerResmi;
@@ -115,42 +117,28 @@ public class MusteriAI : MonoBehaviour
         switch (suAnkiDurum)
         {
             case MusteriDurumu.SiparisBekliyor:
-                // Müþteri masaya oturduðu andan itibaren sayar
                 beklemeSuresi += Time.deltaTime;
-
-                // 100 Saniye Aþýmý
                 if (beklemeSuresi > 100f)
                 {
                     Debug.Log("<color=red>Müþteri: 100 saniyeden fazla bekledim, dükkaný terk ediyorum!</color>");
-
                     if (KasaYonetici.Instance != null)
                     {
-                        // Doðrudan -15 deðerini ana puandan düþmek üzere yolluyoruz
                         KasaYonetici.Instance.MemnuniyetPuaniniIsle(-15f);
                     }
-
                     DurumDegistir(MusteriDurumu.Ayriliyor);
                 }
                 break;
             case MusteriDurumu.YemekYiyor:
                 yemekSayaci -= Time.deltaTime;
-
                 if (yemekSayaci <= 0)
                 {
                     if (onumdekiTepsi != null)
                     {
-                        // Tepsiyi içindekilerden arýndýr
                         onumdekiTepsi.TepsiyiSifirla();
-
-                        // Oyuncu tekrar alabilsin diye fiziðini (Collider) aç
                         Collider col = onumdekiTepsi.GetComponent<Collider>();
                         if (col != null) col.enabled = true;
-
-                        // Müþterinin hafýzasýndan tepsiyi sil
                         onumdekiTepsi = null;
                     }
-
-                    // EKSÝK OLAN SATIR BURASI: Temizlik bittikten sonra müþteriyi kasaya yolla!
                     DurumDegistir(MusteriDurumu.KasayaGidiyor);
                 }
                 break;
@@ -164,7 +152,21 @@ public class MusteriAI : MonoBehaviour
 
         if (FisYonetici.Instance != null)
         {
-            benimFisim = FisYonetici.Instance.YeniFisOlustur(gameObject.name, tursuIsterMi, marulIsterMi, soganIsterMi, patatesIsterMi, secilenIcecekAdi, dilimSayisi);
+            string masaBilgisi = "Ayakta Müþteri";
+
+            if (hedefSandalye != null)
+            {
+                // Sandalyenin bir üst objesi (parent) genelde Masadýr (Örn: "Masa 1")
+                if (hedefSandalye.parent != null)
+                {
+                    masaBilgisi = hedefSandalye.parent.name + " \n " + hedefSandalye.name;
+                }
+                else
+                {
+                    masaBilgisi = hedefSandalye.name; // Eðer masa objesi yoksa sadece sandalyeyi yaz
+                }
+            }
+            benimFisim = FisYonetici.Instance.YeniFisOlustur(masaBilgisi, tursuIsterMi, marulIsterMi, soganIsterMi, patatesIsterMi, sosIsterMi, secilenIcecekAdi, dilimSayisi);
         }
     }
 
@@ -192,10 +194,12 @@ public class MusteriAI : MonoBehaviour
         if (soganIsterMi != icindekiDurum.soganVarMi) siparisDogruMu = false;
         if (patatesIsterMi != icindekiDurum.patatesVarMi) siparisDogruMu = false;
 
+        // EKLENDÝ: Sos kontrolü (Senin Durum.cs içindeki 'sosKullanildiMi' ile eþleþtirildi)
+        if (sosIsterMi != icindekiDurum.sosKullanildiMi) siparisDogruMu = false;
+
         float paraCarpani = 1f;
         float eklenecekMemnuniyet = 0f;
 
-        // AKIÞ ÞEMASI KURALLARI
         if (beklemeSuresi <= 50f)
         {
             if (siparisDogruMu)
@@ -227,19 +231,15 @@ public class MusteriAI : MonoBehaviour
             }
         }
 
-        // Kasa Yöneticisine gönderilecek verilerin iþlenmesi
         if (KasaYonetici.Instance != null)
         {
             odenecekTutar = KasaYonetici.Instance.durumFiyati * paraCarpani;
-
-            // Doðrudan þemadaki +10, -5 gibi deðerleri yolluyoruz (50 falan eklemek yok)
             KasaYonetici.Instance.MemnuniyetPuaniniIsle(eklenecekMemnuniyet);
         }
 
         Collider objeCol = masayaKonanObje.GetComponent<Collider>();
         if (objeCol != null) objeCol.enabled = false;
 
-        // Masaya konan objeden Tray scriptini bulup hafýzaya alýyoruz
         onumdekiTepsi = masayaKonanObje.GetComponent<Tray>();
         if (onumdekiTepsi == null) onumdekiTepsi = masayaKonanObje.GetComponentInChildren<Tray>();
         DurumDegistir(MusteriDurumu.YemekYiyor);
@@ -265,12 +265,17 @@ public class MusteriAI : MonoBehaviour
                 if (agent != null) { agent.enabled = true; if (hedefSandalye != null) agent.SetDestination(hedefSandalye.position); }
                 break;
             case MusteriDurumu.SiparisBekliyor:
-                beklemeSuresi = 0f; // Masaya oturunca sayacý baþlat
+                beklemeSuresi = 0f;
                 if (agent != null) agent.enabled = false;
+
                 tursuIsterMi = Random.value > 0.5f;
                 marulIsterMi = Random.value > 0.5f;
                 soganIsterMi = Random.value > 0.5f;
                 patatesIsterMi = Random.value > 0.5f;
+
+                // EKLENDÝ: %50 ihtimalle sos isteme mekanizmasý
+                sosIsterMi = Random.value > 0.5f;
+
                 dilimSayisi = Random.Range(1, 8);
                 if (yemekIkonu != null && donerResmi != null) yemekIkonu.sprite = donerResmi;
                 if (icecekResimleri.Length > 0 && icecekIkonu != null)
@@ -280,11 +285,26 @@ public class MusteriAI : MonoBehaviour
                     secilenIcecekAdi = icecekResimleri[r].name;
                 }
                 if (siparisCanvas != null) siparisCanvas.SetActive(true);
+                // Yeni sipariþte ikonlarý tekrar görünür yap, eski yazýyý gizle
+                if (yemekIkonu != null) yemekIkonu.gameObject.SetActive(true);
+                if (icecekIkonu != null) icecekIkonu.gameObject.SetActive(true);
+                if (baloncukYazisi != null) baloncukYazisi.gameObject.SetActive(false);
                 if (musteriAnimator != null) musteriAnimator.SetBool("Oturuyor", true);
                 break;
             case MusteriDurumu.YemekYiyor:
                 if (siparisCanvas != null) siparisCanvas.SetActive(false);
                 if (benimFisim != null) Destroy(benimFisim);
+                if (yemekIkonu != null) yemekIkonu.gameObject.SetActive(false);
+                if (icecekIkonu != null) icecekIkonu.gameObject.SetActive(false);
+                string[] replikler = {
+                    "Eline saðlýk ustam!",
+                    "Ustam yine þifa yapmýþsýn bakýyorum.",
+                    "Ooo bol kepçe, eyvallah usta!",
+                    "Aradýðým lezzet iþte buydu!",
+                    "Dönerci Hüseyinn be!"
+                };
+                string secilenReplik = replikler[Random.Range(0, replikler.Length)];
+                StartCoroutine(SureliKonusmaBaloncugu(secilenReplik, 3f));
                 break;
             case MusteriDurumu.KasayaGidiyor:
                 hedefeUlasildiMi = false;
@@ -316,5 +336,24 @@ public class MusteriAI : MonoBehaviour
     {
         Debug.Log("Müþteri: Yemeði yedim, hesabý da ödedim. Kolay gelsin usta!");
         DurumDegistir(MusteriDurumu.Ayriliyor);
+    }
+    // =========================================================================
+    // SÜRELÝ BALONCUK COROUTINE FONKSÝYONU
+    // =========================================================================
+    private System.Collections.IEnumerator SureliKonusmaBaloncugu(string metin, float kalmaSuresi)
+    {
+        if (siparisCanvas != null && baloncukYazisi != null)
+        {
+            baloncukYazisi.gameObject.SetActive(true); // Yazýyý aç
+            baloncukYazisi.text = metin;               // Repliði yazdýr
+            siparisCanvas.SetActive(true);             // Baloncuðu zorla görünür yap
+
+            // Oyun motoruna "Belirtilen saniye kadar burada dur, hiçbir þey yapma" diyoruz
+            yield return new WaitForSeconds(kalmaSuresi);
+
+            // Süre dolunca baloncuðu ve yazýyý tamamen kapatýyoruz
+            siparisCanvas.SetActive(false);
+            baloncukYazisi.gameObject.SetActive(false);
+        }
     }
 }

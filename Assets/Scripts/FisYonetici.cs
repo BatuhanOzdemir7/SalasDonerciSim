@@ -29,7 +29,7 @@ public class FisYonetici : MonoBehaviour
     }
 
     // Geriye GameObject döndürecek þekilde güncelledik
-    public GameObject YeniFisOlustur(string musteriAdi, bool tursu, bool marul, bool sogan, bool patates, string icecekAdi, int dilimSayisi)
+    public GameObject YeniFisOlustur(string musteriAdi, bool tursu, bool marul, bool sogan, bool patates,bool sos,string icecekAdi, int dilimSayisi)
     {
         if (fisPrefab != null && fislikPaneli != null)
         {
@@ -40,10 +40,13 @@ public class FisYonetici : MonoBehaviour
 
             if (fisYazisi != null)
             {
-                string siparisBilgisi = "<align=left><size=110%><b>1x DÜRÜM</b></size> <i>(" + dilimSayisi + " Dilim)</i>\nÝçindekiler:\n";
+                // musteriAdi deðiþkeni artýk "Masa 1 - Sandalye 2" bilgisini taþýyor
+                string siparisBilgisi = "<align=center><size=120%><b>" + musteriAdi + "</b></size></align>\n";
+                siparisBilgisi += "<align=left><size=110%><b>1x DÜRÜM</b></size> <i>(" + dilimSayisi + " Dilim)</i>\nÝçindekiler:\n";
                 if (tursu) siparisBilgisi += " - Turþu\n";
                 if (marul) siparisBilgisi += " - Marul\n";
                 if (sogan) siparisBilgisi += " - Soðan\n";
+                if (sos) siparisBilgisi += " - Sos\n";
                 if (!tursu && !marul && !sogan) siparisBilgisi += " - SADE\n";
 
                 siparisBilgisi += "\n<b>YAN ÜRÜNLER:</b>\n";
