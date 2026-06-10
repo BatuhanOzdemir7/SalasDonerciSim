@@ -37,25 +37,22 @@ public class HijyenYonetici : MonoBehaviour
 
     void NotuHesapla()
     {
-        // Eski notu aklımızda tutalım ki, not değiştiğinde ekrana uyarı verebilelim
         SaglikNotu eskiNot = guncelNot;
 
-        // 5 üzerinden senin belirlediğin aralıklara göre harf veriyoruz
         if (mevcutHijyen >= 4.0f) guncelNot = SaglikNotu.A;
         else if (mevcutHijyen >= 3.0f) guncelNot = SaglikNotu.B;
         else if (mevcutHijyen >= 2.0f) guncelNot = SaglikNotu.C;
         else if (mevcutHijyen >= 1.0f) guncelNot = SaglikNotu.D;
         else guncelNot = SaglikNotu.F;
 
-        // EĞER NOT DÜŞERSE VEYA YÜKSELİRSE:
         if (eskiNot != guncelNot)
         {
             Debug.Log("<color=orange>DİKKAT: Dükkanın Sağlık Notu Değişti! Yeni Not: " + guncelNot + "</color>");
 
-            // F'ye düşerse GDD'deki "Oyun Erken Biter" kuralı çalışır
+            // YENİ SİSTEM: Artık dükkanı anında kapatmıyoruz. Sadece uyarı veriyoruz. Gün sonunu bekleyecek!
             if (guncelNot == SaglikNotu.F)
             {
-                DukkaniKapat();
+                Debug.Log("<color=red>EYVAH! Hijyen F'ye düştü. Gün sonunda zabıta basacak!</color>");
             }
         }
     }
@@ -67,10 +64,4 @@ public class HijyenYonetici : MonoBehaviour
         Debug.Log("Temizlik yapıldı! Hijyen arttı.");
     }
 
-    void DukkaniKapat()
-    {
-        Debug.LogError("SAĞLIK BAKANLIĞI DÜKKANI MÜHÜRLEDİ! OYUN BİTTİ.");
-        // Buraya Game Over ekranını çağırma kodunu ekleyeceğiz
-        Time.timeScale = 0f; // Oyunu durdur
-    }
 }

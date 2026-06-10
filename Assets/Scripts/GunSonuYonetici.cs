@@ -19,6 +19,7 @@ public class GunSonuYonetici : MonoBehaviour
     [Header("UI Panelleri")]
     public GameObject gunSonuCanvas;
     public GameObject finalUICanvas; // BATUHAN'IN FİNAL EKRANI BURAYA GELECEK
+    public GameObject failUICanvas;
 
     [Header("Gün Sonu Metinleri")]
     public TMP_Text gunYazisi;
@@ -37,7 +38,9 @@ public class GunSonuYonetici : MonoBehaviour
     }
 
     void Start()
+
     {
+        if (failUICanvas != null) failUICanvas.SetActive(false);
         // İŞTE KRİTİK NOKTA BURASI: Oyun başlarken hafızadaki günü çekiyoruz!
         mevcutGun = PlayerPrefs.GetInt("KayitliGun", 1);
 
@@ -155,7 +158,17 @@ public class GunSonuYonetici : MonoBehaviour
     // DEVAM BUTONUNA TIKLANINCA ÇALIŞACAK FONKSİYON
     public void SonrakiGuneGec()
     {
-        // 1. FİNAL UI İÇİN O GÜNÜN VERİLERİNİ HAFIZAYA KAYDET
+        // 1. ZABITA KONTROLÜ (Şemadaki FAIL durumu)
+        // Eğer hijyen notu F ise, sonraki güne geçmek yerine direkt Zabıta ekranını patlat!
+        if (HijyenYonetici.Instance != null && HijyenYonetici.Instance.guncelNot == HijyenYonetici.SaglikNotu.F)
+        {
+            Debug.Log("ZABITA BASKINI! Hijyen F olduğu için dükkan mühürlendi.");
+            if (gunSonuCanvas != null) gunSonuCanvas.SetActive(false);
+            if (failUICanvas != null) failUICanvas.SetActive(true);
+            return; // Kodu burada kes, aşağıya inip sonraki güne geçmesini engelle
+        }
+
+        // 2. FİNAL UI İÇİN O GÜNÜN VERİLERİNİ HAFIZAYA KAYDET
         if (KasaYonetici.Instance != null && HijyenYonetici.Instance != null)
         {
             PlayerPrefs.SetFloat("Gun" + mevcutGun + "_Ciro", KasaYonetici.Instance.toplamCiro);
@@ -163,26 +176,36 @@ public class GunSonuYonetici : MonoBehaviour
             PlayerPrefs.SetString("Gun" + mevcutGun + "_Hijyen", HijyenYonetici.Instance.guncelNot.ToString());
         }
 
-        // 2. EĞER 3. GÜN BİTTİYSE FİNAL EKRANINI AÇ!
+        // 3. EĞER 3. GÜN BİTTİYSE FİNAL EKRANINI AÇ! (Şemadaki WIN durumu)
         if (mevcutGun >= 3)
         {
             Debug.Log("3 GÜNLÜK VARDİYA BİTTİ! FİNAL EKRANI AÇILIYOR...");
 
-            if (gunSonuCanvas != null) gunSonuCanvas.SetActive(false); // Eski gün sonunu gizle
-            if (finalUICanvas != null) finalUICanvas.SetActive(true);  // Masalı Final Ekranını patlat!
+            if (gunSonuCanvas != null) gunSonuCanvas.SetActive(false);
+            if (finalUICanvas != null) finalUICanvas.SetActive(true);
 
-            return; // Kodun aşağıya inip sahneyi yeniden yüklemesini engelliyoruz
+            return;
         }
 
-        // 3. EĞER 3. GÜN DEĞİLSE SONRAKİ GÜNE GEÇ
+        // 4. EĞER 3. GÜN DEĞİLSE VE ZABITA BASMADIYSA SONRAKİ GÜNE GEÇ
         mevcutGun++;
 
-        // Sadece kaçıncı günde olduğumuzu hafızada tutuyoruz
         PlayerPrefs.SetInt("KayitliGun", mevcutGun);
         PlayerPrefs.Save();
 
-        // Zamanı normale döndür ve sahneyi sıfırla
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    // ZABITA EKRANINDAKİ "ANA MENÜYE DÖN" BUTONUNA BU FONKSİYONU BAĞLA
+    public void AnaMenuyeDon()
+    {
+        Time.timeScale = 1f;
+        // Oyuncu yandığı için kaydı 1. güne sıfırlıyoruz ki baştan başlasın
+        PlayerPrefs.SetInt("KayitliGun", 1);
+        PlayerPrefs.Save();
+
+        // Eğer Ana Menü sahnene "MainMenu" adını verdiysen böyle kalabilir, 
+        // Yoksa o sahnenin adını buraya yaz. Tek sahnedeyse direkt "SampleScene" yazabilirsin.
+        SceneManager.LoadScene("MainMenu");
     }
 }

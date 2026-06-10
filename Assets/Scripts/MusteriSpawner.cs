@@ -15,12 +15,23 @@ public class MusteriSpawner : MonoBehaviour
     private List<Transform> bosSandalyeler = new List<Transform>();
 
     [Header("Zamanlama Ayarlarý")]
-    public float musteriGelmeAraligi = 7f;
+    public float musteriGelmeAraligi; // Artýk Unity'den deðil, gün sisteminden otomatik alýnacak
     private float timer;
 
     void Start()
     {
-        timer = 1;
+        // GÜN SÝSTEMÝ: Hafýzadaki günü okuyup müþteri spawn süresini ayarlýyoruz
+        int gun = PlayerPrefs.GetInt("KayitliGun", 1);
+
+        if (gun == 1) musteriGelmeAraligi = 60f;
+        else if (gun == 2) musteriGelmeAraligi = 45f;
+        else if (gun >= 3) musteriGelmeAraligi = 30f;
+
+        Debug.Log("<color=cyan>Müþteri Spawner Baþladý: " + gun + ". Gün aktif (" + musteriGelmeAraligi + " saniyede bir müþteri gelecek).</color>");
+
+        // Ýlk müþteri oyuna girer girmez hemen gelsin diye sayacý 1 saniyeden baþlatýyoruz.
+        // Ýkinci müþteriden itibaren normal aralýða dönecek.
+        timer = 10f;
     }
 
     void Update()
@@ -29,6 +40,7 @@ public class MusteriSpawner : MonoBehaviour
 
         if (timer <= 0f)
         {
+            // Müþteri geldikten sonra sayacý o günün zorluðuna göre yeniden kur
             timer = musteriGelmeAraligi;
             MusteriYaratmayiDene();
         }
