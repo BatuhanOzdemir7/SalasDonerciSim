@@ -86,10 +86,11 @@ public class OyuncuEnvanter : MonoBehaviour
         if (eldeTutulanObje != null) return;
 
         eldeTutulanObje = alinacakObje;
+        eldeTutulanObje.SetActive(true);
         eldeTutulanObje.transform.SetParent(elNoktasi);
         eldeTutulanObje.transform.localPosition = Vector3.zero;
         eldeTutulanObje.transform.localRotation = Quaternion.identity;
-
+        
         Collider col = eldeTutulanObje.GetComponentInChildren<Collider>();
         if (col != null) col.enabled = false;
 
