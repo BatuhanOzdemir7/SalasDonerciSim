@@ -18,6 +18,7 @@ public class GunSonuYonetici : MonoBehaviour
 
     [Header("UI Panelleri")]
     public GameObject gunSonuCanvas;
+    public GameObject finalUICanvas; // BATUHAN'IN FİNAL EKRANI BURAYA GELECEK
 
     [Header("Gün Sonu Metinleri")]
     public TMP_Text gunYazisi;
@@ -37,7 +38,12 @@ public class GunSonuYonetici : MonoBehaviour
 
     void Start()
     {
+        // İŞTE KRİTİK NOKTA BURASI: Oyun başlarken hafızadaki günü çekiyoruz!
+        mevcutGun = PlayerPrefs.GetInt("KayitliGun", 1);
+
         if (gunSonuCanvas != null) gunSonuCanvas.SetActive(false);
+        if (finalUICanvas != null) finalUICanvas.SetActive(false);
+
         KalanSureyiSifirla();
     }
 
@@ -157,25 +163,26 @@ public class GunSonuYonetici : MonoBehaviour
             PlayerPrefs.SetString("Gun" + mevcutGun + "_Hijyen", HijyenYonetici.Instance.guncelNot.ToString());
         }
 
-        // 2. EĞER 3. GÜN BİTTİYSE OYUNU BİTİR (Sahneyi sıfırlama)
+        // 2. EĞER 3. GÜN BİTTİYSE FİNAL EKRANINI AÇ!
         if (mevcutGun >= 3)
         {
-            Debug.Log("3 GÜNLÜK VARDİYA BİTTİ! OYUN KAZANILDI!");
-            // İleride buraya Final UI (3 günlük ortalama) panelini açan kodu ekleyeceğiz
-            return;
+            Debug.Log("3 GÜNLÜK VARDİYA BİTTİ! FİNAL EKRANI AÇILIYOR...");
+
+            if (gunSonuCanvas != null) gunSonuCanvas.SetActive(false); // Eski gün sonunu gizle
+            if (finalUICanvas != null) finalUICanvas.SetActive(true);  // Masalı Final Ekranını patlat!
+
+            return; // Kodun aşağıya inip sahneyi yeniden yüklemesini engelliyoruz
         }
 
         // 3. EĞER 3. GÜN DEĞİLSE SONRAKİ GÜNE GEÇ
         mevcutGun++;
 
-        // Sadece kaçıncı günde olduğumuzu hafızada tutuyoruz (Para vs yok)
+        // Sadece kaçıncı günde olduğumuzu hafızada tutuyoruz
         PlayerPrefs.SetInt("KayitliGun", mevcutGun);
         PlayerPrefs.Save();
 
-        // Zamanı normale döndür
+        // Zamanı normale döndür ve sahneyi sıfırla
         Time.timeScale = 1f;
-
-        // SAHNEYİ BAŞTAN AŞAĞI SIFIRLA (Dükkan, hijyen, para her şey pırıl pırıl sıfırlanır)
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
