@@ -40,8 +40,17 @@ public class CopKutusu : MonoBehaviour, IInteractable
         }
 
         // DURUM 3: Malzeme atma
-        if (oyuncu.GetHeldMalzeme() != null)
+        // DURUM 3: Malzeme atma
+        Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
+        if (eldekiMalzeme != null)
         {
+            // YENÝ EKLENEN KORUMA: Eðer elindeki malzeme süpürgeyse iþlemi iptal et!
+            if (eldekiMalzeme.malzemeTipi.ToLower() == "supurge")
+            {
+                Debug.Log("Hop! Süpürgeyi çöpe atamazsýn, onu istasyonuna geri asmalýsýn!");
+                return; // Kodu burada kes, çöpe atmasýna izin verme
+            }
+
             oyuncu.EldenBirakVeSil();
             Debug.Log("Malzeme çöpe atýldý!");
             StartCoroutine(KapakAnimasyonu());

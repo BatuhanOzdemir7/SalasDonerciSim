@@ -34,12 +34,11 @@ public class OyuncuEnvanter : MonoBehaviour
     void TasimaAksiyonu()
     {
         if (isinCikisNoktasi == null) return;
-
         RaycastHit hit;
         if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
         {
-            // FÝLTRE 1: Kasa iþlemi F tuþuna aittir. E tuþu kasayý tetiklemesin.
-            if (hit.collider.GetComponentInParent<KasaYonetici>() != null) return;
+            // FÝLTRE 1: Kasa ve Çöp iþlemi F tuþuna aittir. E tuþu bunlarý tetiklemesin.
+            if (hit.collider.GetComponentInParent<KasaYonetici>() != null || hit.collider.GetComponentInParent<Cop>() != null) return;
 
             IInteractable etkilesimliObje = hit.collider.GetComponentInParent<IInteractable>();
             if (etkilesimliObje != null)
@@ -49,26 +48,25 @@ public class OyuncuEnvanter : MonoBehaviour
             }
         }
 
-        // AKILLI DÜÞÜÞ DÜZELTMESÝ: Boþluða bakýyorsan eþyayý YERE ATMA!
+        // AKILLI DÜZELTMESÝ: Boþa bakýyorsan eþyayý YERE ATMA!
         if (eldeTutulanObje != null)
         {
-            Debug.Log("Uyarý: Elindeki eþyayý boþluða býrakamazsýn! Uygun bir istasyona veya çöpe atmalýsýn.");
-            return; // EldenBirak() kodunu sildik, artýk yere fýrlatmayacak.
+            Debug.Log("Uyarý: Elindeki eþyayý býrakamazsýn! Uygun bir istasyona veya çöpe atmalýsýn.");
+            return;
         }
     }
 
     void IslemAksiyonu()
     {
         if (isinCikisNoktasi == null) return;
-
         RaycastHit hit;
         if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
         {
-            // FÝLTRE 2: F tuþu sadece ÝÞLEM yapýlan objelerde (Tepsi, Ýstasyon, Kasa) lazeri çalýþtýrýr!
-            // Buzdolabý, býçak, fritöz, kepçe gibi "Taþýma" objelerini tamamen yok sayar.
+            // FÝLTRE 2: F tuþu sadece ÝÞLEM yapýlan objelerde çalýþýr
             bool islemIstasyonuMu = hit.collider.GetComponentInParent<Tray>() != null ||
                                     hit.collider.GetComponentInParent<TepsiBirakmaNoktasi>() != null ||
-                                    hit.collider.GetComponentInParent<KasaYonetici>() != null;
+                                    hit.collider.GetComponentInParent<KasaYonetici>() != null ||
+                                    hit.collider.GetComponentInParent<Cop>() != null; // YENÝ: Çöpü F tuþuna dahil ettik!
 
             if (islemIstasyonuMu)
             {

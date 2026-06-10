@@ -16,6 +16,14 @@ public class Cop : MonoBehaviour, IInteractable
 
     public void Interact(OyuncuEnvanter oyuncu)
     {
+        // Garanti olsun diye sadece F tuşuyla çalışmasını söylüyoruz
+        bool fTusunaBasildiMi = Input.GetKey(KeyCode.F) || Input.GetKeyDown(KeyCode.F);
+        if (!fTusunaBasildiMi)
+        {
+            Debug.Log("Çöpü temizlemek için süpürge elindeyken F'ye basmalısın!");
+            return;
+        }
+
         Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
 
         // Eğer elimizde bir malzeme varsa ve bu malzemenin tipi "supurge" ise
@@ -26,13 +34,12 @@ public class Cop : MonoBehaviour, IInteractable
                 // HijyenYonetici'deki TemizlikYap fonksiyonunu çağırıp puanı veriyoruz
                 hijyenYonetici.TemizlikYap(temizlikPuani);
             }
-
             Debug.Log("<color=green>Çöp süpürüldü! Çöp kayboldu ve hijyen arttı.</color>");
             Destroy(this.gameObject); // Çöp objesini tamamen yok et
         }
         else
         {
-            Debug.Log("Bu çöpü elle alamazsın, eline süpürgeyi alman lazım!");
+            Debug.Log("Bu çöpü süpürmek için eline süpürgeyi alman lazım!");
         }
     }
 
