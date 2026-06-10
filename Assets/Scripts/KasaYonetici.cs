@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // YENÝ: Yazýlarý koddan deðiþtirebilmek için bu kütüphaneyi ekledik
+using TMPro;
 
 public class KasaYonetici : MonoBehaviour, IInteractable
 {
@@ -8,27 +8,26 @@ public class KasaYonetici : MonoBehaviour, IInteractable
     public Transform kasaBeklemeNoktasi;
 
     [Header("Para Sistemi")]
-    public float toplamCiro = 0f;       // Kasadaki toplam paramýz
-    public float durumFiyati = 150f;    // Standart menü fiyatý (Ýstersen Inspector'dan deðiþtirebilirsin)
-    public TMP_Text ciroYazisi;         // Ekranda sað üstte duracak o yazý
+    public float toplamCiro = 0f;
+    public float durumFiyati = 150f;    // Taban menü fiyatý (Müþteri çarpaný bunun üzerinden hesaplar)
+    public TMP_Text ciroYazisi;
+
     [Header("Memnuniyet Sistemi")]
     public TMP_Text memnuniyetYazisi;
     private float toplamMemnuniyet = 0f;
     private int hizmetAlanMusteriSayisi = 0;
+
     public float GetOrtalamaMemnuniyet()
     {
-        // O gün hiç müþteri gelmediyse 0'a bölünme hatasý almamak için 100 döndürüyoruz
         if (hizmetAlanMusteriSayisi == 0) return 100f;
         return toplamMemnuniyet / hizmetAlanMusteriSayisi;
     }
 
-    // Bu fonksiyonu scriptin en altýna, diðer fonksiyonlarýn yanýna ekle
     public void MemnuniyetPuaniniIsle(float musteriPuani)
     {
         toplamMemnuniyet += musteriPuani;
         hizmetAlanMusteriSayisi++;
 
-        // Ortalamayý hesapla (Örn: 100 + 80 / 2 = 90)
         float ortalama = toplamMemnuniyet / hizmetAlanMusteriSayisi;
 
         if (memnuniyetYazisi != null)
@@ -36,7 +35,7 @@ public class KasaYonetici : MonoBehaviour, IInteractable
             memnuniyetYazisi.text = "%" + Mathf.RoundToInt(ortalama).ToString();
         }
     }
-    // Kasadaki kuyruk yapýsý
+
     private Queue<MusteriAI> kasaKuyrugu = new Queue<MusteriAI>();
 
     void Awake()
@@ -46,7 +45,6 @@ public class KasaYonetici : MonoBehaviour, IInteractable
 
     void Start()
     {
-        // Oyun baþlarken ekranda 0 TL yazsýn diye
         CiroYazisiniGuncelle();
     }
 
@@ -66,17 +64,17 @@ public class KasaYonetici : MonoBehaviour, IInteractable
         if (kasaKuyrugu.Count > 0)
         {
             MusteriAI siradakiMusteri = kasaKuyrugu.Dequeue();
+
+            // Müþterinin kalitesine göre hesaplanan kendi tutarýný alýyoruz
+            float alinacakHesap = siradakiMusteri.odenecekTutar;
+
             siradakiMusteri.OdemeYapVeGit();
             KuyruguGuncelle();
 
-            // ==========================================
-            // YENÝ: PARAYI KASAYA VE EKRANA EKLEME
-            // ==========================================
-            toplamCiro += durumFiyati;
+            toplamCiro += alinacakHesap;
             CiroYazisiniGuncelle();
 
-            // Ýsteðe baðlý: Kasa sesi (çýnk) eklemek istersen buraya koyabilirsin
-            Debug.Log("<color=green>KASÝYER: Hesap alýndý! Kasaya " + durumFiyati + " TL eklendi. Toplam: " + toplamCiro + " TL</color>");
+            Debug.Log("<color=green>KASÝYER: Hesap alýndý! Kasaya " + alinacakHesap + " TL eklendi. Toplam: " + toplamCiro + " TL</color>");
         }
         else
         {
@@ -89,14 +87,12 @@ public class KasaYonetici : MonoBehaviour, IInteractable
         int index = 0;
         foreach (var musteri in kasaKuyrugu)
         {
-            // BURADAKÝ 1.2f DEÐERÝNÝ 0.8f (VEYA 0.7f) YAPARAK MÜÞTERÝLERÝ SIKIÞTIR
             Vector3 yeniPozisyon = kasaBeklemeNoktasi.position - (kasaBeklemeNoktasi.forward * (index * 0.8f));
             musteri.NavigasyonHedefiVer(yeniPozisyon);
             index++;
         }
     }
 
-    // Ekrandaki yazýyý anýnda güncelleyen köprü
     public void CiroYazisiniGuncelle()
     {
         if (ciroYazisi != null)
