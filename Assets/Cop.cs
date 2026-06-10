@@ -1,28 +1,47 @@
 using UnityEngine;
 
-public class Cop : MonoBehaviour
+public class Cop : MonoBehaviour, IInteractable
 {
     private HijyenYonetici hijyenYonetici;
+    public float temizlikPuani = 0.5f; // Temizleyince gelecek memnuniyet/hijyen puanı
 
     void Start()
     {
-        // Sahnedeki ana hijyen yöneticisini bul
         hijyenYonetici = FindObjectOfType<HijyenYonetici>();
-
         if (hijyenYonetici != null)
         {
-            // Obje spawn olduğu an dükkandaki toplam çöp sayısını 1 artır
-            // Bu sayede HijyenYonetici'deki puan düşüş hızı katlanarak artar
             hijyenYonetici.dukkanCopSayisi++;
         }
     }
 
-    // Paspasla bu çöpü sildiğimizde (Destroy edildiğinde) bu fonksiyon OTOMATİK çalışır
+    public void Interact(OyuncuEnvanter oyuncu)
+    {
+        Malzeme eldekiMalzeme = oyuncu.GetHeldMalzeme();
+
+        // Eğer elimizde bir malzeme varsa ve bu malzemenin tipi "supurge" ise
+        if (eldekiMalzeme != null && eldekiMalzeme.malzemeTipi.ToLower() == "supurge")
+        {
+            if (hijyenYonetici != null)
+            {
+                // HijyenYonetici'deki TemizlikYap fonksiyonunu çağırıp puanı veriyoruz
+                hijyenYonetici.TemizlikYap(temizlikPuani);
+            }
+
+            Debug.Log("<color=green>Çöp süpürüldü! Çöp kayboldu ve hijyen arttı.</color>");
+            Destroy(this.gameObject); // Çöp objesini tamamen yok et
+        }
+        else
+        {
+            Debug.Log("Bu çöpü elle alamazsın, eline süpürgeyi alman lazım!");
+        }
+    }
+
+    // Obje yok olduğunda dükkandaki toplam çöp sayısını düşürür
     void OnDestroy()
     {
-        if (hijyenYonetici != null) 
+        if (hijyenYonetici != null && gameObject.scene.isLoaded)
         {
-            hijyenYonetici.dukkanCopSayisi--; // Çöp silindi, dükkan biraz rahatladı
+            hijyenYonetici.dukkanCopSayisi--;
         }
     }
 }
