@@ -20,7 +20,7 @@ public class MusteriSpawner : MonoBehaviour
 
     void Start()
     {
-        timer = 1;
+        timer = 5f;
     }
 
     void Update()
