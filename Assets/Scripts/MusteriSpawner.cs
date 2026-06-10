@@ -20,7 +20,7 @@ public class MusteriSpawner : MonoBehaviour
 
     void Start()
     {
-        timer = musteriGelmeAraligi;
+        timer = 1;
     }
 
     void Update()
