@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Linq; // Sýralama yapabilmemiz için bu kütüphaneyi ekledik
 
 public class OyuncuEnvanter : MonoBehaviour
 {
@@ -19,11 +18,13 @@ public class OyuncuEnvanter : MonoBehaviour
 
     void Update()
     {
+        // YENÝ STANDART E TUÞU: Sadece Taþýma (Alma / Býrakma)
         if (Input.GetKeyDown(KeyCode.E))
         {
             TasimaAksiyonu();
         }
 
+        // YENÝ STANDART F TUÞU: Sadece Ýþlem (Dürüm Sarma / Hesap Alma)
         if (Input.GetKeyDown(KeyCode.F))
         {
             IslemAksiyonu();
@@ -34,55 +35,25 @@ public class OyuncuEnvanter : MonoBehaviour
     {
         if (isinCikisNoktasi == null) return;
 
-        RaycastHit[] hits = Physics.RaycastAll(isinCikisNoktasi.position, isinCikisNoktasi.forward, etkilesimMesafesi);
-
-        // =========================================================================
-        // JÝLET GÝBÝ SIRALAMA: Çarptýðýmýz her þeyi mesafeye göre (yakýndan uzaða) diziyoruz!
-        // =========================================================================
-        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-
-        foreach (RaycastHit hit in hits)
+        RaycastHit hit;
+        if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
         {
-            // F Tuþunun iþlerini es geçiyoruz
-            if (hit.collider.GetComponentInParent<KasaYonetici>() != null) continue;
-            if (hit.collider.GetComponentInParent<MusteriAI>() != null) continue;
+            // FÝLTRE 1: Kasa iþlemi F tuþuna aittir. E tuþu kasayý tetiklemesin.
+            if (hit.collider.GetComponentInParent<KasaYonetici>() != null) return;
 
-            // =========================================================================
-            // ÝÇECEK/TEPSÝ DÜZELTMESÝ: Eðer elimde bir þey varsa ve baktýðým yerde Tepsi (Tray) varsa, 
-            // direkt tepsiye odaklan, araya giren boþ kutularý yok say!
-            // =========================================================================
-            Tray tepsi = hit.collider.GetComponentInParent<Tray>();
-            if (tepsi != null && eldeTutulanObje != null)
-            {
-                IInteractable tepsiEtkilesim = tepsi.GetComponent<IInteractable>();
-                if (tepsiEtkilesim != null)
-                {
-                    tepsiEtkilesim.Interact(this);
-                    return; // Ýçeceði koyduk, çýk!
-                }
-            }
-
-            // Normal etkileþimler (Buzdolabýndan alma vb.)
             IInteractable etkilesimliObje = hit.collider.GetComponentInParent<IInteractable>();
             if (etkilesimliObje != null)
             {
                 etkilesimliObje.Interact(this);
                 return;
             }
-
-            // Doðrudan malzeme (Lavaþ, Kola vb.) yerden/dolaptan alma
-            Malzeme malzemeScripti = hit.collider.GetComponentInParent<Malzeme>();
-            if (malzemeScripti != null && eldeTutulanObje == null)
-            {
-                PickUpItem(malzemeScripti.gameObject);
-                return;
-            }
         }
 
+        // AKILLI DÜÞÜÞ DÜZELTMESÝ: Boþluða bakýyorsan eþyayý YERE ATMA!
         if (eldeTutulanObje != null)
         {
-            Debug.Log("<color=orange>Uyarý: Elindeki eþyayý boþluða býrakamazsýn!</color>");
-            return;
+            Debug.Log("Uyarý: Elindeki eþyayý boþluða býrakamazsýn! Uygun bir istasyona veya çöpe atmalýsýn.");
+            return; // EldenBirak() kodunu sildik, artýk yere fýrlatmayacak.
         }
     }
 
@@ -90,21 +61,13 @@ public class OyuncuEnvanter : MonoBehaviour
     {
         if (isinCikisNoktasi == null) return;
 
-        RaycastHit[] hits = Physics.RaycastAll(isinCikisNoktasi.position, isinCikisNoktasi.forward, etkilesimMesafesi);
-
-        // F tuþu için de ayný kusursuz sýralamayý yapýyoruz
-        System.Array.Sort(hits, (a, b) => a.distance.CompareTo(b.distance));
-
-        foreach (RaycastHit hit in hits)
+        RaycastHit hit;
+        if (Physics.Raycast(isinCikisNoktasi.position, isinCikisNoktasi.forward, out hit, etkilesimMesafesi))
         {
-            MusteriAI musteri = hit.collider.GetComponentInParent<MusteriAI>();
-            if (musteri != null)
-            {
-                musteri.Interact(this);
-                return;
-            }
-
+            // FÝLTRE 2: F tuþu sadece ÝÞLEM yapýlan objelerde (Tepsi, Ýstasyon, Kasa) lazeri çalýþtýrýr!
+            // Buzdolabý, býçak, fritöz, kepçe gibi "Taþýma" objelerini tamamen yok sayar.
             bool islemIstasyonuMu = hit.collider.GetComponentInParent<Tray>() != null ||
+                                    hit.collider.GetComponentInParent<TepsiBirakmaNoktasi>() != null ||
                                     hit.collider.GetComponentInParent<KasaYonetici>() != null;
 
             if (islemIstasyonuMu)
@@ -113,7 +76,6 @@ public class OyuncuEnvanter : MonoBehaviour
                 if (etkilesimliObje != null)
                 {
                     etkilesimliObje.Interact(this);
-                    return;
                 }
             }
         }
@@ -124,12 +86,6 @@ public class OyuncuEnvanter : MonoBehaviour
         if (eldeTutulanObje != null) return;
 
         eldeTutulanObje = alinacakObje;
-
-        // =========================================================================
-        // JÝLET GÝBÝ ÇÖZÜM: Obje klonlanýrken kapalý gelmiþse bile zorla GÖRÜNÜR YAP!
-        // =========================================================================
-        eldeTutulanObje.SetActive(true);
-
         eldeTutulanObje.transform.SetParent(elNoktasi);
         eldeTutulanObje.transform.localPosition = Vector3.zero;
         eldeTutulanObje.transform.localRotation = Quaternion.identity;
@@ -140,6 +96,7 @@ public class OyuncuEnvanter : MonoBehaviour
         Rigidbody rb = eldeTutulanObje.GetComponentInChildren<Rigidbody>();
         if (rb != null) rb.isKinematic = true;
     }
+
     public void EldenBirak()
     {
         if (eldeTutulanObje != null)
