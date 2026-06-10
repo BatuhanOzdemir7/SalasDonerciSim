@@ -4253,9 +4253,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e784f586417eca34d92385e61739fa84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gun1Suresi: 150
-  gun2Suresi: 120
-  gun3Suresi: 90
+  gun1Suresi: 600
+  gun2Suresi: 420
+  gun3Suresi: 300
   dijitalSaatYazisi: {fileID: 1153725609}
   gunSonuCanvas: {fileID: 445454633}
   finalUICanvas: {fileID: 2115474961}
@@ -19905,7 +19905,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6900857552815362028, guid: b342557fc6abbd84a9f592f64880f219, type: 3}
       propertyPath: saniyelikKirlenmeHizi
-      value: 0.5
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: 7274544609066289735, guid: b342557fc6abbd84a9f592f64880f219, type: 3}
       propertyPath: m_Name
