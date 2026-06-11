@@ -210,12 +210,16 @@ public class DonerMakinesi : MonoBehaviour
             }
         }
 
-        // 8. OTOMATÝK KESÝM
-        // (Burasý senin kodundakiyle tamamen ayný kalacak)
-
         // --- 8. OTOMATÝK KESME (Basýlý Tutmaya Göre) ---
         if (kesimYapiliyorMu)
         {
+            // YENÝ EKLENEN KORUMA: Eðer oyuncu F'ye basýlý tutarken aradan E'ye basýp býçaðý býrakýrsa iþlemi anýnda iptal et!
+            if (makineyeYakinOyuncu == null || !makineyeYakinOyuncu.bicakVarMi)
+            {
+                DurdurKesimveAnimasyon();
+                return; // Kodu burada kes ki ilerleme çubuðu dolmaya devam etmesin
+            }
+
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(true);
 
             // Kesme ilerlemesi sadece F tuþuna basýlý tutulduðunda artar
@@ -226,13 +230,13 @@ public class DonerMakinesi : MonoBehaviour
             if (kesmeIlerlemesi >= 1f)
             {
                 EtKesipDusur();
-                kesmeIlerlemesi = 0f; // Bir dilim kesince çubuðu sýfýrla ki tekrar dolsun
+                kesmeIlerlemesi = 0f; // Bir dilim kesince sýfýrla ki tekrar dolsun
             }
         }
         else
         {
             // Tuþu býraktýðýnda ilerlemeyi sýfýrlamak istersen burayý açabilirsin 
-            // ama Overcooked tarzý olsun dersen burayý boþ býrak ki tuþa tekrar basýnca kaldýðý yerden devam etsin.
+            // ama Overcooked tarzý olsun dersen burayý býrak ki tuþa tekrar basýnca kaldýðý yerden devam etsin.
             if (arkaplanObjesi != null) arkaplanObjesi.SetActive(false);
         }
     }
