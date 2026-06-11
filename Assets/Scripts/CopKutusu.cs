@@ -22,11 +22,11 @@ public class CopKutusu : MonoBehaviour, IInteractable
             return;
         }
 
-        // DURUM 2: Tepsi temizleme
         Tray eldekiTepsi = oyuncu.GetHeldTray();
         if (eldekiTepsi != null)
         {
-            if (eldekiTepsi.tepsidekiEtSayisi == 0 && !eldekiTepsi.isDurum && eldekiTepsi.eklenenMalzemeler.Count == 0)
+            // YENÝ: Artýk direkt Tray'in içindeki o güncel kontrolü çaðýrýyoruz
+            if (eldekiTepsi.TepsiBosMu())
             {
                 Debug.Log("Tepsi zaten temiz!");
             }

@@ -179,7 +179,17 @@ public class Tray : MonoBehaviour, IInteractable
         }
     }
 
-    public bool TepsiBosMu() { return tepsidekiEtSayisi == 0 && !isDurum && eklenenMalzemeler.Count == 0; }
+    public bool TepsiBosMu()
+    {
+        // Et, dürüm, malzemeler, içecekler veya patates varsa tepsi BOÞ DEÐÝLDÝR!
+        return tepsidekiEtSayisi == 0 &&
+               !isDurum &&
+               eklenenMalzemeler.Count == 0 &&
+               !ayranVarMi &&
+               !suVarMi &&
+               !kolaVarMi &&
+               !patatesVarMi;
+    }
 
     public void GorselleriGuncelle()
     {
